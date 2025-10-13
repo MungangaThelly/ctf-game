@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { Analytics } from '@vercel/analytics/react';
+import { Header } from '@/components/Navigation';
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -16,15 +18,13 @@ export const metadata: Metadata = {
   title: "Startup Security Showdown - CTF Game",
   description: "Learn frontend security through gamified challenges. Test your skills against real-world vulnerabilities in a safe environment.",
   keywords: ["cybersecurity", "CTF", "hacking", "frontend security", "web security", "XSS", "JWT", "OWASP"],
-  authors: [{ name: "Security Training Platform" }],
+  authors: [{ name: "Munganga Thelly" }],
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
 };
-
-import { Header } from '@/components/Navigation';
 
 export default function RootLayout({
   children,
@@ -41,6 +41,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
+          <Analytics />
         </div>
       </body>
     </html>
