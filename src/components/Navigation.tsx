@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Shield, Trophy, Target, BookOpen, Menu, X, Home } from 'lucide-react';
@@ -16,6 +17,7 @@ const navigation = [
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   return (
     <>
@@ -41,6 +43,16 @@ export function Navigation() {
             </Link>
           );
         })}
+
+        {/* Session actions */}
+        {session ? (
+          <div className="flex items-center space-x-3">
+            <div className="text-sm font-mono text-green-300">{session.user?.username || session.user?.name}</div>
+            <button onClick={() => signOut()} className="px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
+          </div>
+        ) : (
+          <button onClick={() => signIn()} className="px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
+        )}
       </nav>
 
       {/* Mobile Navigation */}
@@ -76,6 +88,17 @@ export function Navigation() {
                   </Link>
                 );
               })}
+
+              <div className="pt-3 border-t border-green-400/10">
+                {session ? (
+                  <div className="flex items-center justify-between">
+                    <div className="font-mono text-sm text-green-300">{session.user?.username || session.user?.name}</div>
+                    <button onClick={() => signOut()} className="px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
+                  </div>
+                ) : (
+                  <button onClick={() => signIn()} className="w-full px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
+                )}
+              </div>
             </div>
           </div>
         )}

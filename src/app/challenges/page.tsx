@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, Lightbulb, CheckCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { gameStore } from '@/store/gameStore';
@@ -18,6 +20,19 @@ export default function ChallengesPage() {
     setChallenges(gameStore.getChallengesWithState());
     setGameState(gameStore.getGameState());
   }, []);
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleLaunch = (challengeId: string) => {
+    if (status !== 'authenticated') {
+      // Redirect to sign-in (NextAuth) or prompt
+      signIn(undefined, { callbackUrl: `/challenges/${challengeId}` });
+      return;
+    }
+
+    router.push(`/challenges/${challengeId}`);
+  };
 
   const handleChallengeSelect = (challengeId: string) => {
     setSelectedChallenge(challengeId);
@@ -213,12 +228,12 @@ export default function ChallengesPage() {
                   </div>
                   
                   <div className="mt-4 flex space-x-3">
-                    <Link
-                      href={`/challenges/${selectedChallengeData.id}`}
+                    <button
+                      onClick={() => handleLaunch(selectedChallengeData.id)}
                       className="bg-green-400 text-black px-6 py-2 rounded font-mono font-bold hover:bg-green-300 transition-colors"
                     >
                       Launch Challenge
-                    </Link>
+                    </button>
                     
                     <button className="border border-blue-400 text-blue-400 px-6 py-2 rounded font-mono hover:bg-blue-400/10 transition-colors">
                       View Source Code
