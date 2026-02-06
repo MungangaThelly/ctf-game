@@ -23,6 +23,9 @@ export const authOptions = {
       }
     })
   ],
+  pages: {
+    signIn: '/signin',
+  },
   session: { strategy: 'jwt' },
   callbacks: {
     async jwt({ token, user }) {
