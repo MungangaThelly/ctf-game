@@ -56,7 +56,10 @@ export function Navigation() {
             <button onClick={() => signOut()} className="px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
           </div>
         ) : (
-          <button onClick={() => signIn()} className="px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
+          <div className="flex items-center space-x-3">
+            <Link href="/signup" className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm">Sign up</Link>
+            <button onClick={() => signIn()} className="px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
+          </div>
         )}
       </nav>
 
@@ -104,7 +107,12 @@ export function Navigation() {
                     <button onClick={() => signOut()} className="w-full px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
                   </>
                 ) : (
-                  <button onClick={() => signIn()} className="w-full px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
+                  <>
+                    <Link href="/signup" onClick={() => setIsOpen(false)} className="block w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm text-center">
+                      Sign up
+                    </Link>
+                    <button onClick={() => signIn()} className="w-full px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
+                  </>
                 )}
               </div>
             </div>
