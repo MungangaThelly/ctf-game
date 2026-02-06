@@ -1,0 +1,13 @@
+{
+  "buildCommand": "prisma generate && next build",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
+    "STRIPE_SECRET_KEY": "@stripe-secret-key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
+    "NEXTAUTH_URL": "@nextauth-url",
+    "NEXTAUTH_SECRET": "@nextauth-secret",
+    "DATABASE_URL": "@database-url"
+  }
+}
