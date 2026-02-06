@@ -1,9 +1,10 @@
 import { getServerSession } from 'next-auth';
 import { stripe } from '@/lib/stripe';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return Response.json({ error: 'Not authenticated' }, { status: 401 });
     }
