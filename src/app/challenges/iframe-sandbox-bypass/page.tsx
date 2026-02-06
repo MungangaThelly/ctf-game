@@ -19,25 +19,20 @@ export default function IframeSandboxChallenge() {
     setCompleted(state.completedChallenges.includes('iframe-sandbox-bypass'));
     setExploited(state.exploitedChallenges.includes('iframe-sandbox-bypass'));
 
-    // Listen for postMessage from iframe (vulnerability detection)
+    // Listen for postMessage from iframe (with proper origin validation)
     const handleMessage = (event: MessageEvent) => {
       const timestamp = new Date().toLocaleTimeString();
       
+      // SECURE: Validate message origin to prevent malicious cross-origin communication
+      if (event.origin !== window.location.origin) {
+        console.warn(`Blocked message from untrusted origin: ${event.origin}`);
+        return; // Reject messages from other origins
+      }
+      
       if (event.data && typeof event.data === 'object') {
-        if (event.data.type === 'SANDBOX_ESCAPE_ATTEMPT') {
-          setExploited(true);
-          gameStore.recordExploit('iframe-sandbox-bypass', true);
-          
-          setMessages(prev => [...prev, 
-            `${timestamp} - 🚨 SANDBOX ESCAPE DETECTED! Message: ${JSON.stringify(event.data)}`
-          ]);
-          
-          alert(`🚨 EXPLOIT SUCCESSFUL! 🚨\n\nYou've successfully bypassed the iframe sandbox!\n\nThe embedded content was able to communicate with the parent window despite sandbox restrictions.\n\nThis could be used to steal data or execute malicious actions in the parent context.`);
-        } else {
-          setMessages(prev => [...prev, 
-            `${timestamp} - Message received: ${JSON.stringify(event.data)}`
-          ]);
-        }
+        setMessages(prev => [...prev, 
+          `${timestamp} - Message received from trusted origin: ${JSON.stringify(event.data)}`
+        ]);
       }
     };
 
@@ -234,11 +229,11 @@ try {
                   </div>
                 </div>
                 
-                {/* The vulnerable iframe with incomplete sandbox */}
+                {/* SECURE: Properly sandboxed iframe */}
                 <iframe
                   ref={iframeRef}
                   className="w-full h-64 border border-gray-600 rounded bg-white"
-                  sandbox="allow-scripts" // ❌ Missing allow-same-origin prevention
+                  sandbox="" // ✅ No permissions - safest option
                   title="Embedded Content Preview"
                 />
                 

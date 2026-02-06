@@ -55,24 +55,16 @@ export default function AuthBypassChallenge() {
   };
 
   const attemptAdminAccess = () => {
-    // Check admin access (vulnerable client-side check)
-    const storedAdmin = localStorage.getItem('isAdmin');
+    // SECURE: Validate credentials server-side (simulated)
+    // Only grant access if the actual logged-in user is 'admin'
+    // Ignore localStorage flags; trust only authenticated username
     
-    if (storedAdmin === 'true') {
+    if (currentUser === 'admin') {
       setShowAdminPanel(true);
       setAdminAccess(true);
-      
-      // If user wasn't originally admin but gained access, they exploited it
-      if (currentUser !== 'admin' && !challengeCompleted) {
-        setExploitDetected(true);
-        gameStore.recordExploit('auth-bypass-admin', true);
-        
-        const points = gameStore.completeChallenge('auth-bypass-admin');
-        setChallengeCompleted(true);
-        alert(`🎉 Authorization Bypass Successful! You earned ${points} points!`);
-      }
     } else {
-      alert('Access Denied: Admin privileges required');
+      // Non-admin users cannot access admin panel even if localStorage is modified
+      alert('Access Denied: Admin privileges required. Only the admin user can access this panel.');
     }
   };
 

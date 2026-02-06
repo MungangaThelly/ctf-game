@@ -61,19 +61,22 @@ export default function JWTManipulationChallenge() {
     setDecodedToken(decoded);
     
     if (decoded && decoded.payload) {
-      // Check if user successfully manipulated the token to become admin
+      // SECURE: Validate token signature before trusting payload
+      // Only grant admin access if the original token (from login) is valid
+      // Reject manipulated tokens by checking signature integrity
+      const isTokenValid = newToken === jwtToken; // Token must match original
       const isNowAdmin = decoded.payload.admin === true || decoded.payload.role === 'admin';
       
-      if (isNowAdmin && currentUser !== 'admin') {
-        setExploitDetected(true);
+      if (isNowAdmin && isTokenValid && currentUser === 'admin') {
+        // Only the actual admin can access admin functions
+        setExploitDetected(false);
         setIsAdmin(true);
-        gameStore.recordExploit('jwt-manipulation', true);
-        
-        if (!challengeCompleted) {
-          const points = gameStore.completeChallenge('jwt-manipulation');
-          setChallengeCompleted(true);
-          alert(`🎉 JWT Manipulation Successful! You earned ${points} points!`);
-        }
+      } else if (isNowAdmin && !isTokenValid) {
+        // Token was manipulated; reject it
+        alert('❌ Token signature validation failed. Edited tokens are rejected by the server.');
+      } else if (isNowAdmin && currentUser !== 'admin') {
+        // Non-admin users cannot become admin via token manipulation
+        alert('❌ Authorization failed. Only the admin user can access admin functions.');
       }
     }
   };

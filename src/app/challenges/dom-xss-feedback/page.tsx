@@ -5,6 +5,7 @@ import { ArrowLeft, Send, AlertTriangle, CheckCircle, Star, MessageCircle } from
 import Link from 'next/link';
 import { gameStore } from '@/store/gameStore';
 import { containsXSS } from '@/lib/utils';
+import DOMPurify from 'dompurify';
 
 export default function DOMXSSChallenge() {
   const [feedback, setFeedback] = useState('');
@@ -43,11 +44,12 @@ export default function DOMXSSChallenge() {
     // Add to submitted feedback list
     setSubmittedFeedback(prev => [...prev, feedback]);
 
-    // VULNERABLE: Directly injecting HTML into DOM (this is intentional for the CTF)
+    // Sanitize user-provided HTML before injecting into DOM
     if (feedbackDisplayRef.current) {
       const feedbackElement = document.createElement('div');
       feedbackElement.className = 'border border-green-400/20 p-4 rounded mb-2';
-      feedbackElement.innerHTML = `
+
+      const rawHtml = `
         <div class="flex items-center space-x-2 mb-2">
           <div class="flex">
             ${Array.from({length: rating}, (_, i) => '<span class="text-yellow-400">⭐</span>').join('')}
@@ -57,6 +59,9 @@ export default function DOMXSSChallenge() {
         </div>
         <div class="text-green-300">${feedback}</div>
       `;
+
+      // Use DOMPurify to remove dangerous markup while keeping harmless HTML
+      feedbackElement.innerHTML = DOMPurify.sanitize(rawHtml);
       feedbackDisplayRef.current.appendChild(feedbackElement);
     }
 

@@ -32,33 +32,21 @@ export default function OpenRedirectChallenge() {
     
     // Simulate login process
     if (username && password) {
-      // Check if redirect URL is to an external domain (vulnerability!)
-      try {
-        const url = new URL(redirectUrl, window.location.origin);
-        const isExternal = url.hostname !== window.location.hostname;
-        
-        if (isExternal) {
-          setExploited(true);
-          gameStore.recordExploit('open-redirect-login', true);
-          
-          setLoginAttempts(prev => [...prev, 
-            `${timestamp} - LOGIN: User "${username}" - REDIRECT TO EXTERNAL DOMAIN: ${url.href}`
-          ]);
-          
-          // In a real scenario, this would redirect the user
-          alert(`🚨 EXPLOIT SUCCESSFUL! 🚨\n\nYou've successfully exploited an open redirect vulnerability!\n\nThe application would now redirect users to: ${url.href}\n\nThis could be used for phishing attacks by redirecting users to malicious sites that look legitimate.`);
-        } else {
-          setLoginAttempts(prev => [...prev, 
-            `${timestamp} - LOGIN: User "${username}" - Safe redirect to: ${url.href}`
-          ]);
-          alert('Login successful! Redirecting to dashboard...');
-        }
-      } catch (error) {
-        // Invalid URL
+      // SECURE: Validate redirect URL against whitelist (relative paths only)
+      const allowedDomains = ['localhost', window.location.hostname];
+      const isValidRedirect = isValidRedirectUrl(redirectUrl, allowedDomains);
+      
+      if (isValidRedirect) {
         setLoginAttempts(prev => [...prev, 
-          `${timestamp} - LOGIN: User "${username}" - Invalid redirect URL: ${redirectUrl}`
+          `${timestamp} - LOGIN: User "${username}" - Safe redirect to: ${redirectUrl}`
         ]);
-        alert('Login failed: Invalid redirect URL');
+        alert('Login successful! Redirecting to dashboard...');
+      } else {
+        // Reject external or malicious redirects
+        setLoginAttempts(prev => [...prev, 
+          `${timestamp} - LOGIN: User "${username}" - REJECTED external redirect: ${redirectUrl}`
+        ]);
+        alert('❌ Login rejected: Invalid redirect URL. Only redirects to the same domain are allowed.');
       }
     } else {
       alert('Please enter both username and password');

@@ -89,13 +89,21 @@ export function decodeMockJWT(token: string): { header: any; payload: any; signa
 // Validate URL for open redirect challenges
 export function isValidRedirectUrl(url: string, allowedDomains: string[] = []): boolean {
   try {
-    const parsed = new URL(url);
-    
-    // For our CTF, we'll be permissive to allow exploitation
+    // SECURE: Always require HTTPS and validate against whitelist
+    // Reject all external redirects if allowedDomains is empty
     if (allowedDomains.length === 0) {
-      return true; // Vulnerable by design
+      // Only allow relative paths (start with /)
+      return url.startsWith('/') && !url.startsWith('//');
     }
     
+    const parsed = new URL(url);
+    
+    // Require HTTPS
+    if (parsed.protocol !== 'https:') {
+      return false;
+    }
+    
+    // Validate against whitelist
     return allowedDomains.some(domain => 
       parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
     );
