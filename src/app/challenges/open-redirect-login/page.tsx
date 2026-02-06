@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Shield, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { useSession, signIn } from 'next-auth/react';
 import { gameStore } from '@/store/gameStore';
 import { isValidRedirectUrl } from '@/lib/utils';
 
 export default function OpenRedirectChallenge() {
+  const { data: session, status } = useSession();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [redirectUrl, setRedirectUrl] = useState('');
@@ -16,6 +18,10 @@ export default function OpenRedirectChallenge() {
   const [hintsUsed, setHintsUsed] = useState(0);
 
   useEffect(() => {
+    if (status === 'authenticated' && session?.user?.isPaid === false) {
+      return;
+    }
+
     // Check if already completed
     const state = gameStore.getGameState();
     setCompleted(state.completedChallenges.includes('open-redirect-login'));
@@ -26,6 +32,53 @@ export default function OpenRedirectChallenge() {
     const redirect = urlParams.get('redirect') || '/dashboard';
     setRedirectUrl(redirect);
   }, []);
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-green-300 font-mono">
+        Loading challenge...
+      </div>
+    );
+  }
+
+  if (status !== 'authenticated') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-6 bg-gray-900 rounded text-center">
+          <div className="text-green-300 mb-4 font-mono">Sign in to access this premium challenge.</div>
+          <button
+            onClick={() => signIn(undefined, { callbackUrl: '/challenges/open-redirect-login' })}
+            className="px-4 py-2 bg-green-400 text-black rounded font-mono"
+          >
+            Sign in
+          </button>
+          <div className="mt-4">
+            <Link href="/challenges" className="text-green-300 hover:underline font-mono">
+              Back to Challenges
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (session?.user?.isPaid === false) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-6 bg-gray-900 rounded text-center">
+          <div className="text-yellow-300 mb-4 font-mono">Premium challenge locked. Upgrade to access.</div>
+          <Link href="/pricing" className="px-4 py-2 bg-yellow-500 text-black rounded font-mono">
+            Upgrade Now
+          </Link>
+          <div className="mt-4">
+            <Link href="/challenges" className="text-green-300 hover:underline font-mono">
+              Back to Challenges
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleLogin = () => {
     const timestamp = new Date().toLocaleTimeString();

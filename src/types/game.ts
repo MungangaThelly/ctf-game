@@ -7,6 +7,7 @@ export interface Challenge {
   points: number;
   hints: string[];
   exploitTarget: string;
+  isPremium?: boolean;
   completed: boolean;
   exploited: boolean;
   timeStarted?: number;

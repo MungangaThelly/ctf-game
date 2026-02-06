@@ -58,6 +58,7 @@ export const CHALLENGES: Challenge[] = [
     category: 'jwt',
     difficulty: 'hard',
     points: 200,
+    isPremium: true,
     hints: [
       'Analyze the structure of the JWT token',
       'Check if the token signature is properly validated',
@@ -74,6 +75,7 @@ export const CHALLENGES: Challenge[] = [
     category: 'redirect',
     difficulty: 'easy',
     points: 100,
+    isPremium: true,
     hints: [
       'Look for redirect parameters in the login URL',
       'Check if the redirect URL is properly validated',
@@ -90,6 +92,7 @@ export const CHALLENGES: Challenge[] = [
     category: 'sandbox',
     difficulty: 'hard',
     points: 250,
+    isPremium: true,
     hints: [
       'Examine the iframe sandbox attributes',
       'Look for ways to communicate with the parent window',

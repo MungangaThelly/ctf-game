@@ -3,10 +3,14 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Key, Shield, AlertTriangle, CheckCircle, Copy } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession, signIn } from 'next-auth/react';
 import { gameStore } from '@/store/gameStore';
 import { createMockJWT, decodeMockJWT } from '@/lib/utils';
 
 export default function JWTManipulationChallenge() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [currentUser, setCurrentUser] = useState('guest');
   const [jwtToken, setJwtToken] = useState('');
   const [editedToken, setEditedToken] = useState('');
@@ -16,6 +20,11 @@ export default function JWTManipulationChallenge() {
   const [challengeCompleted, setChallengeCompleted] = useState(false);
 
   useEffect(() => {
+    if (status === 'authenticated' && session?.user?.isPaid === false) {
+      router.push('/pricing');
+      return;
+    }
+
     // Initialize with a guest token
     const guestPayload = {
       sub: 'user_123',
@@ -34,6 +43,53 @@ export default function JWTManipulationChallenge() {
     const state = gameStore.getGameState();
     setChallengeCompleted(state.completedChallenges.includes('jwt-manipulation'));
   }, []);
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-green-300 font-mono">
+        Loading challenge...
+      </div>
+    );
+  }
+
+  if (status !== 'authenticated') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-6 bg-gray-900 rounded text-center">
+          <div className="text-green-300 mb-4 font-mono">Sign in to access this premium challenge.</div>
+          <button
+            onClick={() => signIn(undefined, { callbackUrl: '/challenges/jwt-manipulation' })}
+            className="px-4 py-2 bg-green-400 text-black rounded font-mono"
+          >
+            Sign in
+          </button>
+          <div className="mt-4">
+            <Link href="/challenges" className="text-green-300 hover:underline font-mono">
+              Back to Challenges
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (session?.user?.isPaid === false) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-6 bg-gray-900 rounded text-center">
+          <div className="text-yellow-300 mb-4 font-mono">Premium challenge locked. Upgrade to access.</div>
+          <Link href="/pricing" className="px-4 py-2 bg-yellow-500 text-black rounded font-mono">
+            Upgrade Now
+          </Link>
+          <div className="mt-4">
+            <Link href="/challenges" className="text-green-300 hover:underline font-mono">
+              Back to Challenges
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleLogin = (username: string, password: string) => {
     // Simulate login (any password works for demo)

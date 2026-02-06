@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Eye, EyeOff, Lightbulb, CheckCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Lightbulb, CheckCircle, AlertTriangle, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { gameStore } from '@/store/gameStore';
 import { CHALLENGES, CATEGORIES } from '@/lib/config';
@@ -24,10 +24,15 @@ export default function ChallengesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const handleLaunch = (challengeId: string) => {
+  const handleLaunch = (challengeId: string, isPremium?: boolean) => {
     if (status !== 'authenticated') {
       // Redirect to sign-in (NextAuth) or prompt
       signIn(undefined, { callbackUrl: `/challenges/${challengeId}` });
+      return;
+    }
+
+    if (isPremium && !session?.user?.isPaid) {
+      router.push('/pricing');
       return;
     }
 
@@ -78,6 +83,7 @@ export default function ChallengesPage() {
                 const category = CATEGORIES[challenge.category];
                 const isCompleted = challenge.completed;
                 const isExploited = challenge.exploited;
+                const isLocked = challenge.isPremium && !session?.user?.isPaid;
                 
                 return (
                   <button
@@ -97,6 +103,11 @@ export default function ChallengesPage() {
                         </span>
                       </div>
                       <div className="flex space-x-1">
+                        {isLocked && (
+                          <div title="Premium">
+                            <Lock className="w-4 h-4 text-yellow-400" />
+                          </div>
+                        )}
                         {isExploited && (
                           <div title="Exploited">
                             <AlertTriangle className="w-4 h-4 text-orange-400" />
@@ -122,6 +133,11 @@ export default function ChallengesPage() {
                       }`}>
                         {challenge.difficulty.toUpperCase()}
                       </span>
+                      {challenge.isPremium && (
+                        <span className="px-2 py-1 rounded font-mono bg-yellow-400/20 text-yellow-300">
+                          PREMIUM
+                        </span>
+                      )}
                       <span className="text-green-400 font-mono">
                         {challenge.points} pts
                       </span>
@@ -158,6 +174,20 @@ export default function ChallengesPage() {
                   </div>
                   
                   <p className="text-green-300 mb-4">{selectedChallengeData.description}</p>
+
+                  {selectedChallengeData.isPremium && !session?.user?.isPaid && (
+                    <div className="mt-4 p-4 border border-yellow-400/40 bg-yellow-400/10 rounded">
+                      <div className="flex items-center space-x-2 text-yellow-300 font-mono">
+                        <Lock className="w-4 h-4" />
+                        <span>Premium challenge. Upgrade to unlock access.</span>
+                      </div>
+                      <div className="mt-3">
+                        <Link href="/pricing" className="inline-block px-4 py-2 bg-yellow-500 text-black rounded font-mono text-sm">
+                          Upgrade Now
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="flex items-center space-x-4 text-sm">
                     <span className={`px-2 py-1 rounded font-mono ${
@@ -229,10 +259,17 @@ export default function ChallengesPage() {
                   
                   <div className="mt-4 flex space-x-3">
                     <button
-                      onClick={() => handleLaunch(selectedChallengeData.id)}
-                      className="bg-green-400 text-black px-6 py-2 rounded font-mono font-bold hover:bg-green-300 transition-colors"
+                      onClick={() => handleLaunch(selectedChallengeData.id, selectedChallengeData.isPremium)}
+                      disabled={selectedChallengeData.isPremium && !session?.user?.isPaid}
+                      className={`px-6 py-2 rounded font-mono font-bold transition-colors ${
+                        selectedChallengeData.isPremium && !session?.user?.isPaid
+                          ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                          : 'bg-green-400 text-black hover:bg-green-300'
+                      }`}
                     >
-                      Launch Challenge
+                      {selectedChallengeData.isPremium && !session?.user?.isPaid
+                        ? 'Upgrade to Launch'
+                        : 'Launch Challenge'}
                     </button>
                     
                     <button className="border border-blue-400 text-blue-400 px-6 py-2 rounded font-mono hover:bg-blue-400/10 transition-colors">
