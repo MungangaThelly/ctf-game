@@ -49,6 +49,10 @@ export function Navigation() {
         {session ? (
           <div className="flex items-center space-x-3">
             <div className="text-sm font-mono text-green-300">{session.user?.username || session.user?.name}</div>
+            <Link href="/profile" className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm flex items-center space-x-1">
+              <User className="w-4 h-4" />
+              <span>Profile</span>
+            </Link>
             <button onClick={() => signOut()} className="px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
           </div>
         ) : (
@@ -90,12 +94,15 @@ export function Navigation() {
                 );
               })}
 
-              <div className="pt-3 border-t border-green-400/10">
+              <div className="pt-3 border-t border-green-400/10 space-y-2">
                 {session ? (
-                  <div className="flex items-center justify-between">
-                    <div className="font-mono text-sm text-green-300">{session.user?.username || session.user?.name}</div>
-                    <button onClick={() => signOut()} className="px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
-                  </div>
+                  <>
+                    <div className="font-mono text-sm text-green-300 px-3 py-2">{session.user?.username || session.user?.name}</div>
+                    <Link href="/profile" onClick={() => setIsOpen(false)} className="block w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm text-center">
+                      Profile
+                    </Link>
+                    <button onClick={() => signOut()} className="w-full px-3 py-2 bg-red-600 text-white rounded font-mono text-sm">Sign out</button>
+                  </>
                 ) : (
                   <button onClick={() => signIn()} className="w-full px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">Sign in</button>
                 )}

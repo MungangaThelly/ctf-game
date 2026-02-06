@@ -65,7 +65,7 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto">
         <div className="bg-slate-800 border border-green-400/20 rounded-lg p-8">
           <h1 className="text-3xl font-bold text-green-400 mb-2">Your Profile</h1>
-          <p className="text-gray-400 mb-6">Manage your account details and subscription</p>
+          <p className="text-gray-300 mb-6 text-lg">Manage your account details and subscription</p>
 
           {/* Account Info Section */}
           <div className="mb-8 p-6 bg-slate-900 rounded-lg border border-green-400/10">
