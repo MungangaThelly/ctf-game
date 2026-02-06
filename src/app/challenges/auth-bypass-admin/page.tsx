@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Users, Lock, Unlock, AlertTriangle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { gameStore } from '@/store/gameStore';
 
 export default function AuthBypassChallenge() {
+  const { data: session, status } = useSession();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
@@ -74,6 +76,42 @@ export default function AuthBypassChallenge() {
     setAdminAccess(true);
     alert('localStorage modified: isAdmin = true');
   };
+
+  // Show sign-in screen if not authenticated
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+        <div className="text-green-400 font-mono">Loading...</div>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+        <div className="max-w-md p-8 border border-green-400/30 rounded-lg bg-black/50">
+          <h2 className="text-2xl font-mono font-bold text-green-400 mb-4">Sign In Required</h2>
+          <p className="text-green-300/80 font-mono mb-6">
+            Please sign in to access this challenge and track your progress.
+          </p>
+          <div className="flex space-x-4">
+            <Link
+              href="/signin"
+              className="flex-1 px-6 py-3 bg-green-500/20 border border-green-400 text-green-400 rounded hover:bg-green-500/30 transition-colors text-center font-mono"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/challenges"
+              className="flex-1 px-6 py-3 border border-green-400/30 text-green-400/70 rounded hover:border-green-400 transition-colors text-center font-mono"
+            >
+              Back
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const hints = [
     'The application stores authentication state in localStorage',
