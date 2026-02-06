@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Challenges', href: '/challenges', icon: Target },
   { name: 'Leaderboard', href: '/leaderboard', icon: Trophy },
   { name: 'Learn', href: '/learn', icon: BookOpen },
+  { name: 'Pricing', href: '/pricing', icon: Shield },
 ];
 
 export function Navigation() {

@@ -8,18 +8,18 @@ export const authOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
+        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        const user = await prisma.user.findUnique({ where: { username: credentials.username } });
+        const user = await prisma.user.findUnique({ where: { email: credentials.email } });
         if (!user) return null;
 
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) return null;
 
-        return { id: user.id, name: user.name, username: user.username, isPaid: user.isPaid };
+        return { id: user.id, name: user.name, email: user.email, username: user.username, isPaid: user.isPaid };
       }
     })
   ],
@@ -27,14 +27,16 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // propagate custom flags into token
+        // propagate custom fields into token
+        token.id = user.id;
+        token.email = user.email;
         token.username = user.username;
         token.isPaid = user.isPaid ?? false;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user = { ...session.user, username: token.username, isPaid: token.isPaid };
+      session.user = { ...session.user, id: token.id, email: token.email, username: token.username, isPaid: token.isPaid };
       return session;
     }
   },
