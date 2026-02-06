@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Shield, Trophy, Target, BookOpen, Menu, X, Home, User } from 'lucide-react';
+import { Shield, Trophy, Target, BookOpen, Menu, X, Home, User, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -49,6 +49,12 @@ export function Navigation() {
         {session ? (
           <div className="flex items-center space-x-3">
             <div className="text-sm font-mono text-green-300">{session.user?.username || session.user?.name}</div>
+            {session.user?.email === 'admin@example.com' && (
+              <Link href="/admin" className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-mono text-sm flex items-center space-x-1">
+                <BarChart3 className="w-4 h-4" />
+                <span>Admin</span>
+              </Link>
+            )}
             <Link href="/profile" className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm flex items-center space-x-1">
               <User className="w-4 h-4" />
               <span>Profile</span>
@@ -101,6 +107,12 @@ export function Navigation() {
                 {session ? (
                   <>
                     <div className="font-mono text-sm text-green-300 px-3 py-2">{session.user?.username || session.user?.name}</div>
+                    {session.user?.email === 'admin@example.com' && (
+                      <Link href="/admin" onClick={() => setIsOpen(false)} className="block w-full px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-mono text-sm text-center flex items-center justify-center space-x-2">
+                        <BarChart3 className="w-4 h-4" />
+                        <span>Admin</span>
+                      </Link>
+                    )}
                     <Link href="/profile" onClick={() => setIsOpen(false)} className="block w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm text-center">
                       Profile
                     </Link>
