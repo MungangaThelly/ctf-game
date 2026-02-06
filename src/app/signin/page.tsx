@@ -121,16 +121,6 @@ export default function SignInPage() {
               </Link>
             </p>
           </div>
-
-          <div className="mt-4 p-3 bg-slate-700/50 border border-green-400/10 rounded-lg">
-            <p className="text-xs text-gray-400 mb-1">Demo accounts:</p>
-            <p className="text-xs text-green-300/70 font-mono">
-              guest@example.com / password
-            </p>
-            <p className="text-xs text-green-300/70 font-mono">
-              admin@example.com / secret
-            </p>
-          </div>
         </div>
       </div>
     </div>
