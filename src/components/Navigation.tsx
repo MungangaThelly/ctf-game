@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Shield, Trophy, Target, BookOpen, Menu, X, Home } from 'lucide-react';
+import { Shield, Trophy, Target, BookOpen, Menu, X, Home, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
