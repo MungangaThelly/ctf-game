@@ -1,9 +1,9 @@
 # 🏆 Startup Security Showdown
 *An Interactive CTF (Capture The Flag) Game for Frontend Security Training*
 
-![Next.js](https://img.shields.io/badge/Next.js-15.5.4-black)
+![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC)
 ![Security](https://img.shields.io/badge/Security-CTF-red)
 ![Deployment](https://img.shields.io/badge/Deployed-Vercel-brightgreen)
 
@@ -62,14 +62,14 @@
 ## 🛠️ **Technical Stack**
 
 ### **Frontend Framework:**
-- **Next.js 15.5.4** - React framework with App Router
+- **Next.js 16.1.6** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling with custom hacker theme
 - **Framer Motion** - Smooth animations and transitions
 
 ### **Deployment & Infrastructure:**
 - **Vercel** - Production hosting with global CDN
-- **Turbopack** - Fast development and build performance
+- **Turbopack** - Fast development bundler (dev only)
 - **Vercel Analytics** - User engagement and performance tracking
 
 ### **Game Engine:**
@@ -115,9 +115,6 @@ npm run build
 
 # Start production server locally  
 npm run start
-
-# Type checking
-npm run type-check
 
 # Linting (with fixes)
 npm run lint -- --fix

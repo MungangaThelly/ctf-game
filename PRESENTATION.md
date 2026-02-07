@@ -55,9 +55,9 @@
 
 ### **Full Production Stack:**
 ```typescript
-Frontend: Next.js 15.5.4 + TypeScript + Tailwind CSS
+Frontend: Next.js 16.1.6 + TypeScript + Tailwind CSS
 Deployment: Vercel with global CDN + automatic HTTPS
-Performance: Turbopack build optimization + edge caching
+Performance: Turbopack dev bundler + edge caching
 Analytics: Real-time user tracking + engagement metrics
 Security: Controlled vulnerability sandbox + educational content
 ```

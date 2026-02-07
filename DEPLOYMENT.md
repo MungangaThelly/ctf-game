@@ -25,9 +25,10 @@ datasource db {
 }
 ```
 
-**Run migration:**
+**Create schema on PostgreSQL:**
 ```bash
-npx prisma migrate dev --name init
+# For Neon and other serverless Postgres providers
+npx prisma db push
 ```
 
 ---
@@ -89,7 +90,11 @@ STRIPE_WEBHOOK_SECRET=<will-set-after-webhook-setup>
 
 **Generate NEXTAUTH_SECRET:**
 ```bash
+# macOS/Linux
 openssl rand -base64 32
+
+# PowerShell
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Minimum 0 -Maximum 256 }))
 ```
 
 ### 3.4 Deploy
@@ -112,7 +117,11 @@ Click **"Deploy"** and wait for build to complete.
 
 **Run Prisma migration on production:**
 ```bash
+# If you have migrations checked in
 npx prisma migrate deploy
+
+# If you only used db push during setup
+npx prisma db push
 ```
 
 **Seed admin user:**
