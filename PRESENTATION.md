@@ -11,6 +11,8 @@
 
 **"Startup Security Showdown"** - A gamified cybersecurity training platform that's currently **live in production** and being used by developers to learn security through hands-on exploitation of real vulnerabilities.
 
+**Scope note:** The platform focuses on frontend security (XSS, DOM issues, iframe, redirects) while touching backend concepts like JWT manipulation and auth/authorization flows. It is not a full backend security training platform.
+
 ### **🔥 Why This Project is Unique & Impressive:**
 - **🎯 Rare Expertise Combination** - Security + Education + Gamification + Production Deployment
 - **🎮 Interactive Learning Revolution** - 80% retention vs 20% traditional training

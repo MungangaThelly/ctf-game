@@ -23,6 +23,8 @@
 
 **Startup Security Showdown** is a gamified cybersecurity training platform designed specifically for frontend developers in modern development environments. Instead of boring PDFs about security vulnerabilities, developers learn by actually exploiting real vulnerabilities in a safe, controlled environment.
 
+**Scope note:** The challenges focus on frontend security (XSS, DOM issues, iframe, redirects) while also touching backend concepts like JWT manipulation and auth/authorization flows. It is not a full backend security training platform.
+
 ### 🔥 **Why This Project Stands Out**
 
 - **🎯 Unique Concept** - Very few developers build security-focused CTF games
