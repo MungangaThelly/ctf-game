@@ -1,7 +1,7 @@
 # 🎯 Startup Security Showdown - Project Presentation
 *An Interactive CTF Game for Frontend Security Training*
 
-**🌐 Live Demo:** https://ctf-game-sigma.vercel.app/
+**🌐 Live Demo:** https://ctf-game-trainer.vercel.app/
 **📱 Try it now:** Works on any device - scan QR code or visit URL directly  
 **⚡ Global Access:** Fast loading worldwide via Vercel's edge network
 
@@ -22,7 +22,7 @@
 ---
 
 ## ⚡ **Live Production Demo** 
-**🌐 https://ctf-game-sigma.vercel.app/**
+**🌐 https://ctf-game-trainer.vercel.app/**
 
 ### **🎮 Interactive Demo Flow (3-4 minutes):**
 
@@ -368,7 +368,7 @@ Market: Expansion beyond pilot customers to broader market
 **🎯 Ready for questions, pilot discussions, and partnership exploration!**
 
 **📧 Contact:** it.weor@gmail.com  
-**🌐 Live Demo:** https://ctf-game-sigma.vercel.app/  
+**🌐 Live Demo:** https://ctf-game-trainer.vercel.app/  
 **📊 Analytics Dashboard:** Available for serious partnership discussions
 
 ---

@@ -8,7 +8,7 @@
 ![Deployment](https://img.shields.io/badge/Deployed-Vercel-brightgreen)
 
 ## 🌐 **Live Demo**
-**🚀 Production URL:** https://ctf-game-sigma.vercel.app/  
+**🚀 Production URL:** https://ctf-game-trainer.vercel.app/  
 **📱 Mobile-friendly:** Works on all devices and screen sizes  
 **🔗 Shareable:** Perfect for interviews, presentations, and portfolio reviews  
 **⚡ Global CDN:** Fast loading worldwide via Vercel's edge network
@@ -244,7 +244,7 @@ npm run lint -- --fix
 ## 🎪 **Demo Script (5 Minutes)**
 
 ### **Opening** (30 seconds)
-*"I built an interactive cybersecurity game that's currently live and being used by developers worldwide. Instead of reading about XSS attacks, they actually perform them in a controlled environment. You can try it right now at https://ctf-game-sigma.vercel.app/."*
+*"I built an interactive cybersecurity game that's currently live and being used by developers worldwide. Instead of reading about XSS attacks, they actually perform them in a controlled environment. You can try it right now at https://ctf-game-trainer.vercel.app/."*
 
 ### **Live Demo** (3 minutes)
 1. **Show Homepage** - "Notice the professional hacker aesthetic that makes security training engaging"
