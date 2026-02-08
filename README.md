@@ -200,7 +200,7 @@ npm run lint -- --fix
 ## 💰 **Monetization Strategy**
 
 ### **Individual Developers:**
-- 🆓 **Freemium Model** - Basic challenges free, advanced content premium ($10-15/month)
+- 🆓 **Freemium Model** - Basic challenges free, advanced content premium ($9.99/month)
 - 💎 **Premium Subscription** - Full access with personalized learning paths
 - 🎓 **Certification** - Paid security competency certificates ($50-100)
 
@@ -227,7 +227,7 @@ npm run lint -- --fix
 |---------|-------------|---------------------------|
 | **Engagement** | 📖 Reading PDFs | 🎮 Interactive gaming |
 | **Retention** | 20% knowledge retention | 80%+ hands-on retention |
-| **Cost** | $500-2000 per person | $25-50 per person/month |
+| **Cost** | $500-2000 per person | $9.99 per person/month (80% cheaper) |
 | **Relevance** | Generic enterprise | Developer-specific scenarios |
 | **Assessment** | Multiple choice tests | Real exploit verification |
 | **Accessibility** | In-person or scheduled | 24/7 self-paced learning |
@@ -258,7 +258,7 @@ npm run lint -- --fix
 5. **Analytics** - "I can track engagement and see this challenge has 85% completion rate"
 
 ### **Business Value** (90 seconds)
-*"This solves a $366 million market problem - security training that developers actually want to use. Traditional training has 20% retention, this has 80%+ because it's hands-on. At $25-50 per developer per month, it's 80% cheaper than traditional methods while being far more effective."*
+*"This solves a $366 million market problem - security training that developers actually want to use. Traditional training has 20% retention, this has 80%+ because it's hands-on. At just $9.99/month, it's 95% cheaper than traditional methods ($500-2000/person) while being far more effective."*
 
 ## 📈 **Success Metrics & KPIs**
 
