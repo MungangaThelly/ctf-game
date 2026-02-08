@@ -238,8 +238,11 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-green-400/20 p-6 text-center">
         <div className="max-w-6xl mx-auto">
-          <p className="text-green-300/60 font-mono text-sm">
+          <p className="text-green-300/60 font-mono text-sm mb-2">
             Built for security education • Practice ethical hacking • Stay curious 🔒
+          </p>
+          <p className="text-green-300/40 font-mono text-xs">
+            © {new Date().getFullYear()} IT-Weor AB, Org.nr: 559397-7332. All rights reserved.
           </p>
         </div>
       </footer>
