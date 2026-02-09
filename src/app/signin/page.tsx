@@ -10,8 +10,12 @@ export default async function SignInRedirect({
 
   if (callbackUrl) {
     try {
-      const url = new URL(callbackUrl);
-      const parts = url.pathname.split('/').filter(Boolean);
+      // Handle both absolute and relative URLs
+      const pathname = callbackUrl.startsWith('http') 
+        ? new URL(callbackUrl).pathname 
+        : callbackUrl;
+      
+      const parts = pathname.split('/').filter(Boolean);
       if (parts[0] === 'en' || parts[0] === 'fr') {
         locale = parts[0];
       }
