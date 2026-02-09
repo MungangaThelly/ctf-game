@@ -101,8 +101,11 @@ export default function DOMXSSChallenge() {
         <div class="text-green-300">${feedback}</div>
       `;
 
-      // Use DOMPurify to remove dangerous markup while keeping harmless HTML
-      feedbackElement.innerHTML = DOMPurify.sanitize(rawHtml);
+      // Use DOMPurify to remove dangerous markup - only allow safe tags
+      feedbackElement.innerHTML = DOMPurify.sanitize(rawHtml, { 
+        ALLOWED_TAGS: ['span', 'div', 'p', 'br'],
+        ALLOWED_ATTR: ['class']
+      });
       feedbackDisplayRef.current.appendChild(feedbackElement);
     }
 
