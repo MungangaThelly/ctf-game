@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Security Prevention & Mitigation Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #059669;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #059669;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-left: 4px solid #059669;
+            padding-left: 15px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #0891b2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        h4 {
+            color: #1e40af;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .challenge-section {
+            page-break-inside: avoid;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            border-left: 4px solid #059669;
+        }
+        
+        .safe {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            color: #047857;
+        }
+        
+        .unsafe {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            color: #991b1b;
+        }
+        
+        .best-practices {
+            background: #eff6ff;
+            border-left: 4px solid #0284c7;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .best-practices ul {
+            list-style-position: inside;
+            margin-left: 10px;
+        }
+        
+        .best-practices li {
+            margin: 8px 0;
+            color: #0c4a6e;
+        }
+        
+        .best-practices li:before {
+            content: "✓ ";
+            color: #0284c7;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f3f4f6;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        .checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 4px;
+        }
+        
+        .checklist-item:before {
+            content: "☐";
+            margin-right: 10px;
+            font-size: 1.2em;
+            color: #059669;
+        }
+        
+        .header-info {
+            background: #ecfdf5;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #059669;
+        }
+        
+        .toc {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+        }
+        
+        .toc ol {
+            font-size: 0.95em;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            h2 {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 CTF Security Prevention & Mitigation Guide</h1>
+        
+        <div class="header-info">
+            <p><strong>Document:</strong> Security Best Practices for Web Vulnerabilities</p>
+            <p><strong>Date:</strong> February 9, 2026</p>
+            <p><strong>Version:</strong> 1.0</p>
+            <p><strong>Coverage:</strong> 5 Critical Web Security Challenges</p>
+        </div>
+        
+        <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+                <li>DOM XSS (Cross-Site Scripting)</li>
+                <li>JWT Manipulation (Token Hijacking)</li>
+                <li>Auth Bypass (localStorage Exploitation)</li>
+                <li>Open Redirect (Phishing Attacks)</li>
+                <li>iframe Sandbox Bypass</li>
+                <li>Defense in Depth Strategy</li>
+                <li>Security Checklist</li>
+            </ol>
+        </div>
+
+        <!-- Challenge 1 -->
+        <div class="challenge-section">
+            <h2>1. DOM XSS (Feedback Challenge)</h2>
+            
+            <h3>Vulnerability Overview</h3>
+            <p>The application directly injects user input into the DOM using <code>innerHTML</code>, allowing attackers to execute arbitrary JavaScript code.</p>
+            
+            <h3>Root Cause</h3>
+            <div class="unsafe">
+                <strong>❌ UNSAFE CODE:</strong><br>
+                Direct HTML injection without sanitization
+            </div>
+            
+            <pre>// ❌ UNSAFE
+feedbackElement.innerHTML = userInput; // Direct injection</pre>
+            
+            <h3>Prevention Strategies</h3>
+            
+            <h4>1. Use Text Content Instead of HTML</h4>
+            <div class="safe">
+                <strong>✓ SAFE:</strong><br>
+                No HTML parsing, plain text only
+            </div>
+            <pre>// ✅ SAFE - No HTML parsing
+const div = document.createElement('div');
+div.textContent = userInput; // Text only, no script execution</pre>
+            
+            <h4>2. Use DOMPurify with Whitelist</h4>
+            <pre>// ✅ SAFE with strict configuration
+const sanitized = DOMPurify.sanitize(userInput, {
+  ALLOWED_TAGS: ['b', 'i', 'em', 'strong'],
+  ALLOWED_ATTR: ['class'],
+  KEEP_CONTENT: true
+});
+element.innerHTML = sanitized;</pre>
+            
+            <h4>3. Use Template Literals with Escaping</h4>
+            <pre>// ✅ SAFE - Escape HTML entities
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+element.innerHTML = `&lt;p&gt;${escapeHTML(userInput)}&lt;/p&gt;`;</pre>
+            
+            <h4>4. Framework-Level Protection (React)</h4>
+            <pre>// ✅ React automatically escapes by default
+function Feedback({ text }) {
+  return &lt;div&gt;{text}&lt;/div&gt;; // Text is escaped automatically
+}</pre>
+            
+            <div class="best-practices">
+                <h4>Best Practices</h4>
+                <ul>
+                    <li>Use <code>textContent</code> instead of <code>innerHTML</code> whenever possible</li>
+                    <li>Never trust user input—always sanitize</li>
+                    <li>Use security libraries (DOMPurify, Sanitize.js)</li>
+                    <li>Implement Content Security Policy (CSP) headers</li>
+                    <li>Use modern frameworks (React, Vue) with auto-escaping</li>
+                    <li>Regular security audits and pen testing</li>
+                </ul>
+            </div>
+            
+            <h4>Content Security Policy Example</h4>
+            <pre>Content-Security-Policy: 
+  script-src 'self'; 
+  style-src 'self' 'unsafe-inline'; 
+  img-src 'self' data:;</pre>
+        </div>
+
+        <!-- Challenge 2 -->
+        <div class="challenge-section">
+            <h2>2. JWT Manipulation (Auth Challenge)</h2>
+            
+            <h3>Vulnerability Overview</h3>
+            <p>Client-side JWT validation without signature verification allows privilege escalation by modifying token claims.</p>
+            
+            <h3>Root Cause</h3>
+            <div class="unsafe">
+                <strong>❌ UNSAFE CODE:</strong><br>
+            </div>
+            <pre>// ❌ UNSAFE - Trusts token without verification
+const decoded = jwtDecode(token);
+if (decoded.role === 'admin') { // Attacker modifies this
+  grantAdminAccess();
+}</pre>
+            
+            <h3>Prevention Strategies</h3>
+            
+            <h4>1. Always Verify Signatures Server-Side</h4>
+            <pre>// ✅ SAFE - Verify signature on backend
+const jwt = require('jsonwebtoken');
+const token = req.headers.authorization?.split(' ')[1];
+
+try {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  if (decoded.role === 'admin') {
+    grantAdminAccess();
+  }
+} catch (err) {
+  return res.status(401).json({ error: 'Unauthorized' });
+}</pre>
+            
+            <h4>2. Use RS256 (Asymmetric Signing)</h4>
+            <pre>// ✅ BEST - RS256 with public/private keys
+const privateKey = fs.readFileSync('private.pem', 'utf8');
+const token = jwt.sign(payload, privateKey, {
+  algorithm: 'RS256' // Asymmetric - only server can sign
+});
+
+// Verification
+const publicKey = fs.readFileSync('public.pem', 'utf8');
+jwt.verify(token, publicKey, {
+  algorithms: ['RS256']
+});</pre>
+            
+            <h4>3. Secure Token Storage</h4>
+            <pre>// ✅ SAFE - httpOnly cookie (prevents XSS theft)
+res.cookie('token', jwt, {
+  httpOnly: true,     // JS can't access
+  secure: true,       // HTTPS only
+  sameSite: 'strict', // CSRF protection
+  maxAge: 3600000     // 1 hour
+});</pre>
+            
+            <div class="best-practices">
+                <h4>Best Practices</h4>
+                <ul>
+                    <li>Always verify JWTs on the backend—never trust client claims</li>
+                    <li>Use RS256 (asymmetric) for multi-server setups</li>
+                    <li>Set short expiration times (15-60 minutes)</li>
+                    <li>Use refresh tokens for long sessions</li>
+                    <li>Store tokens in httpOnly cookies, not localStorage</li>
+                    <li>Implement token revocation/blacklist for logout</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Challenge 3 -->
+        <div class="challenge-section">
+            <h2>3. Auth Bypass (localStorage Challenge)</h2>
+            
+            <h3>Vulnerability Overview</h3>
+            <p>Authentication state stored in client-side <code>localStorage</code> can be modified by attackers directly via browser DevTools or JavaScript injection.</p>
+            
+            <h3>Root Cause</h3>
+            <div class="unsafe">
+                <strong>❌ UNSAFE CODE:</strong><br>
+            </div>
+            <pre>// ❌ UNSAFE - Trusts client-side storage
+localStorage.setItem('isAdmin', 'true');
+if (localStorage.getItem('isAdmin') === 'true') {
+  grantAdminAccess(); // Anyone can set this!
+}</pre>
+            
+            <h3>Prevention Strategies</h3>
+            
+            <h4>1. Use Server-Side Sessions</h4>
+            <pre>// ✅ SAFE - Session stored on server
+const session = require('express-session');
+
+app.use(session({
+  store: new RedisStore(), // Server-side storage
+  secret: process.env.SECRET,
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict'
+}));
+
+app.get('/admin', (req, res) => {
+  if (req.session?.user?.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+});</pre>
+            
+            <h4>2. Use Secure Cookies</h4>
+            <pre>// ✅ SAFE - httpOnly cookies (XSS-resistant)
+res.cookie('auth', token, {
+  httpOnly: true,      // JavaScript can't access
+  secure: true,        // HTTPS only
+  sameSite: 'strict',  // CSRF protection
+  signed: true         // Tamper-proof
+});</pre>
+            
+            <h4>3. Never Trust Client-Side Data</h4>
+            <pre>// ✅ SAFE - Always re-verify from server
+app.get('/admin', requireAuth, async (req, res) => {
+  // 1. Verify session/token
+  const decoded = jwt.verify(req.token, secret);
+  
+  // 2. Query database for current user
+  const user = await User.findById(decoded.sub);
+  
+  // 3. Check permissions from DB
+  if (user.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+});</pre>
+            
+            <div class="best-practices">
+                <h4>Best Practices</h4>
+                <ul>
+                    <li>Store sensitive data on the server, not client</li>
+                    <li>Use httpOnly cookies for session tokens</li>
+                    <li>Implement CSRF protection</li>
+                    <li>Never trust the client for authorization decisions</li>
+                    <li>Implement rate limiting on sensitive endpoints</li>
+                    <li>Log all authentication/authorization events</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Challenge 4 -->
+        <div class="challenge-section">
+            <h2>4. Open Redirect (Login Challenge)</h2>
+            
+            <h3>Vulnerability Overview</h3>
+            <p>Unvalidated redirect parameters allow attackers to redirect users to malicious sites, enabling phishing attacks.</p>
+            
+            <h3>Root Cause</h3>
+            <div class="unsafe">
+                <strong>❌ UNSAFE CODE:</strong><br>
+            </div>
+            <pre>// ❌ UNSAFE - No validation
+const redirect = req.query.redirect;
+res.redirect(redirect); // Could be https://evil.com</pre>
+            
+            <h3>Prevention Strategies</h3>
+            
+            <h4>1. Whitelist Allowed URLs</h4>
+            <pre>// ✅ SAFE - Whitelist specific domains
+const ALLOWED_REDIRECTS = [
+  'https://myapp.com',
+  'https://dashboard.myapp.com'
+];
+
+function isValidRedirect(url) {
+  try {
+    const parsed = new URL(url);
+    return ALLOWED_REDIRECTS.some(allowed => 
+      parsed.origin === new URL(allowed).origin
+    );
+  } catch {
+    return false;
+  }
+}
+
+app.post('/login', (req, res) => {
+  const redirect = req.body.redirect || '/dashboard';
+  if (!isValidRedirect(redirect)) {
+    redirect = '/dashboard';
+  }
+  res.redirect(redirect);
+});</pre>
+            
+            <h4>2. Use Relative URLs Only</h4>
+            <pre>// ✅ SAFE - Relative paths can't redirect externally
+function isRelativePath(path) {
+  return path.startsWith('/') && !path.startsWith('//');
+}
+
+if (isRelativePath(userProvidedRedirect)) {
+  res.redirect(userProvidedRedirect);
+} else {
+  res.redirect('/dashboard');
+}</pre>
+            
+            <h4>3. Comprehensive URL Validation</h4>
+            <pre>// ✅ SAFE - Comprehensive validation
+function isValidRedirect(url, baseUrl) {
+  try {
+    const parsed = new URL(url, baseUrl);
+    const base = new URL(baseUrl);
+    
+    // Must be same origin
+    if (parsed.origin !== base.origin) return false;
+    
+    // Prevent protocol-relative URLs
+    if (url.startsWith('//')) return false;
+    
+    // Only allow http(s)
+    if (!/^https?:$/.test(parsed.protocol)) return false;
+    
+    return true;
+  } catch {
+    return false;
+  }
+}</pre>
+            
+            <div class="best-practices">
+                <h4>Best Practices</h4>
+                <ul>
+                    <li>Never redirect to user-supplied URLs without validation</li>
+                    <li>Whitelist allowed redirect URLs</li>
+                    <li>Use relative URLs when possible</li>
+                    <li>Block protocol-relative URLs (<code>//</code>)</li>
+                    <li>Block non-http(s) protocols</li>
+                    <li>Log all redirects for security monitoring</li>
+                    <li>Implement login rate limiting</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Challenge 5 -->
+        <div class="challenge-section">
+            <h2>5. iframe Sandbox Bypass</h2>
+            
+            <h3>Vulnerability Overview</h3>
+            <p>Overly permissive iframe sandbox attributes allow cross-origin communication and script execution, enabling privilege escalation attacks.</p>
+            
+            <h3>Root Cause</h3>
+            <div class="unsafe">
+                <strong>❌ UNSAFE CODE:</strong><br>
+            </div>
+            <pre><!-- ❌ UNSAFE - Too many permissions -->
+&lt;iframe sandbox="allow-scripts allow-same-origin allow-forms"&gt;
+  <!-- Can execute scripts AND communicate with parent -->
+&lt;/iframe&gt;</pre>
+            
+            <h3>Prevention Strategies</h3>
+            
+            <h4>1. Use Minimal Sandbox Restrictions</h4>
+            <pre><!-- ✅ SAFEST - No permissions at all -->
+&lt;iframe src="untrusted-content.html" sandbox="" 
+        title="Sandboxed content"&gt;&lt;/iframe&gt;
+
+<!-- ✅ SAFE - Only allow basic display -->
+&lt;iframe src="trusted-content.html" 
+        sandbox="allow-forms" 
+        title="Embedded forms"&gt;&lt;/iframe&gt;</pre>
+            
+            <h4>2. Safe Cross-Origin Communication</h4>
+            <pre>// ✅ SAFE - Validate origin strictly
+window.addEventListener('message', (event) => {
+  // Check origin explicitly
+  if (event.origin !== 'https://trusted-site.com') {
+    console.warn('Blocked message from untrusted origin');
+    return;
+  }
+  
+  // Validate data structure
+  if (event.data && event.data.type === 'SAFE_ACTION') {
+    handleSafeAction(event.data);
+  }
+});
+
+// Send with specific origin
+iframe.contentWindow.postMessage(
+  { type: 'INIT' },
+  'https://trusted-site.com' // Specific origin
+);</pre>
+            
+            <h4>3. Production-Ready iframe</h4>
+            <pre>&lt;iframe 
+  src="https://trusted-cdn.example.com/content.html"
+  sandbox="allow-same-origin"
+  title="Embedded Content"
+  loading="lazy"
+&gt;&lt;/iframe&gt;
+
+&lt;script&gt;
+window.addEventListener('message', (event) => {
+  if (event.origin !== 'https://trusted-cdn.example.com') return;
+  if (!event.data || typeof event.data !== 'object') return;
+  
+  const allowedActions = ['log', 'notify'];
+  if (!allowedActions.includes(event.data.action)) return;
+  
+  handleAction(event.data);
+});
+&lt;/script&gt;</pre>
+            
+            <div class="best-practices">
+                <h4>Best Practices</h4>
+                <ul>
+                    <li>Use <code>sandbox=""</code> (empty) when possible—maximum protection</li>
+                    <li>Only add required permissions: <code>allow-same-origin</code>, <code>allow-scripts</code>, <code>allow-forms</code></li>
+                    <li>Always validate message origin in postMessage listeners</li>
+                    <li>Use specific origins instead of <code>'*'</code> in postMessage</li>
+                    <li>Implement Permissions-Policy headers</li>
+                    <li>Treat iframe content as untrusted</li>
+                    <li>Implement Content Security Policy (CSP)</li>
+                    <li>Regular security updates for embedded content</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Defense in Depth -->
+        <div class="challenge-section">
+            <h2>Defense in Depth Strategy</h2>
+            
+            <p>Security is most effective when implemented across multiple layers:</p>
+            
+            <h3>Layer 1: Input Validation</h3>
+            <ul>
+                <li>Validate all user inputs (frontend + backend)</li>
+                <li>Use whitelists, not blacklists</li>
+                <li>Escape special characters</li>
+            </ul>
+            
+            <h3>Layer 2: Encoding & Sanitization</h3>
+            <ul>
+                <li>HTML escape output</li>
+                <li>JSON escape for APIs</li>
+                <li>SQL parameterized queries</li>
+            </ul>
+            
+            <h3>Layer 3: Authentication & Authorization</h3>
+            <ul>
+                <li>Strong session management</li>
+                <li>Multi-factor authentication</li>
+                <li>Role-based access control (RBAC)</li>
+            </ul>
+            
+            <h3>Layer 4: Network Security</h3>
+            <ul>
+                <li>HTTPS only (TLS 1.3+)</li>
+                <li>HSTS headers</li>
+                <li>Secure cookies (httpOnly, Secure, SameSite)</li>
+            </ul>
+            
+            <h3>Layer 5: Content Security Policy</h3>
+            <pre>Content-Security-Policy: 
+  default-src 'self';
+  script-src 'self' https://trusted-cdn.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self';
+  connect-src 'self' https://api.example.com;
+  frame-ancestors 'none';</pre>
+            
+            <h3>Layer 6: Monitoring & Logging</h3>
+            <ul>
+                <li>Log all authentication events</li>
+                <li>Monitor for suspicious patterns</li>
+                <li>Alert on anomalies</li>
+                <li>Regular security audits</li>
+            </ul>
+        </div>
+
+        <!-- Checklist -->
+        <div class="challenge-section">
+            <h2>Security Checklist</h2>
+            
+            <div class="checklist">
+                <div class="checklist-item">Sanitize all user inputs with DOMPurify</div>
+                <div class="checklist-item">Verify JWTs server-side with signature checking</div>
+                <div class="checklist-item">Store auth data on server (not localStorage)</div>
+                <div class="checklist-item">Validate all redirects against whitelist</div>
+                <div class="checklist-item">Use restrictive iframe sandbox attributes</div>
+                <div class="checklist-item">Implement HTTPS/TLS everywhere</div>
+                <div class="checklist-item">Use httpOnly cookies for tokens</div>
+                <div class="checklist-item">Implement CSRF protection</div>
+                <div class="checklist-item">Add Content-Security-Policy headers</div>
+                <div class="checklist-item">Regular penetration testing</div>
+                <div class="checklist-item">Keep dependencies updated</div>
+                <div class="checklist-item">Implement rate limiting</div>
+                <div class="checklist-item">Add security logging & monitoring</div>
+                <div class="checklist-item">Enable 2FA/MFA for accounts</div>
+                <div class="checklist-item">Regular security audits</div>
+                <div class="checklist-item">Security training for developers</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Generated:</strong> February 9, 2026 | <strong>Version:</strong> 1.0</p>
+            <p>This document covers prevention and mitigation strategies for 5 critical web security vulnerabilities.</p>
+            <p><strong>Print to PDF:</strong> Use Ctrl+P (Windows) or Cmd+P (Mac) to print this page as PDF</p>
+        </div>
+    </div>
+</body>
+</html>
