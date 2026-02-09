@@ -119,7 +119,7 @@ export function Navigation() {
         ) : (
           <div className="flex items-center space-x-3">
             <Link href={getLocaleHref('/signup')} className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm">{t('signUp')}</Link>
-            <button onClick={() => signIn()} className="px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">{t('signIn')}</button>
+            <button onClick={() => signIn(undefined, { callbackUrl: getLocaleHref('/challenges') })} className="px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">{t('signIn')}</button>
           </div>
         )}
       </nav>
@@ -215,7 +215,7 @@ export function Navigation() {
                     <Link href={getLocaleHref('/signup')} onClick={() => setIsOpen(false)} className="block w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-mono text-sm text-center">
                       {t('signUp')}
                     </Link>
-                    <button onClick={() => signIn()} className="w-full px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">{t('signIn')}</button>
+                    <button onClick={() => signIn(undefined, { callbackUrl: getLocaleHref('/challenges') })} className="w-full px-3 py-2 bg-green-400 text-black rounded font-mono text-sm">{t('signIn')}</button>
                   </>
                 )}
               </div>
