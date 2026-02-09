@@ -29,6 +29,25 @@
     "noAccount": "Pas encore de compte ?",
     "signUpLink": "Inscrivez-vous ici"
   },
+  "signup": {
+    "title": "Créer un compte",
+    "subtitle": "Rejoignez la communauté des défis CTF",
+    "name": "Nom complet",
+    "namePlaceholder": "Jean Dupont",
+    "email": "Email",
+    "emailPlaceholder": "vous@exemple.com",
+    "username": "Nom d'utilisateur",
+    "usernamePlaceholder": "hackersecurite",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Au moins 6 caractères",
+    "confirmPassword": "Confirmer le mot de passe",
+    "confirmPasswordPlaceholder": "Ressaisissez le mot de passe",
+    "creatingAccount": "Création du compte...",
+    "signUpButton": "S'inscrire",
+    "success": "✓ Compte créé avec succès ! Redirection vers la connexion...",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signInLink": "Connectez-vous ici"
+  },
   "home": {
     "title": "Startup Security Showdown",
     "subtitle": "Maîtrisez la sécurité front-end grâce à des défis ludiques",
