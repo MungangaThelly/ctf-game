@@ -154,13 +154,6 @@
     "lessons": "Leçons",
     "resources": "Ressources"
   },
-  "pricing": {
-    "title": "Tarification",
-    "free": "Gratuit",
-    "pro": "Pro",
-    "enterprise": "Entreprise",
-    "getStarted": "Commencer"
-  },
   "profile": {
     "title": "Mon profil",
     "username": "Nom d'utilisateur",

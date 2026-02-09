@@ -154,13 +154,6 @@
     "lessons": "Lessons",
     "resources": "Resources"
   },
-  "pricing": {
-    "title": "Pricing",
-    "free": "Free",
-    "pro": "Pro",
-    "enterprise": "Enterprise",
-    "getStarted": "Get Started"
-  },
   "profile": {
     "title": "My Profile",
     "username": "Username",
