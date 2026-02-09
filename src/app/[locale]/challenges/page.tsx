@@ -5,12 +5,14 @@ import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, Lightbulb, CheckCircle, AlertTriangle, Lock } from 'lucide-react';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { gameStore } from '@/store/gameStore';
 import { CHALLENGES, CATEGORIES } from '@/lib/config';
 import { formatScore } from '@/lib/utils';
 
 export default function ChallengesPage() {
+  const locale = useLocale();
+  const t = useTranslations('challenges');
   const [challenges, setChallenges] = useState(gameStore.getChallengesWithState());
   const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [showHints, setShowHints] = useState(false);
@@ -24,7 +26,6 @@ export default function ChallengesPage() {
 
   const { data: session, status } = useSession();
   const router = useRouter();
-  const locale = useLocale();
 
   const handleLaunch = (challengeId: string, isPremium?: boolean) => {
     if (status !== 'authenticated') {
