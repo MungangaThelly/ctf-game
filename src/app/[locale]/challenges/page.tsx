@@ -5,6 +5,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, Lightbulb, CheckCircle, AlertTriangle, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import { gameStore } from '@/store/gameStore';
 import { CHALLENGES, CATEGORIES } from '@/lib/config';
 import { formatScore } from '@/lib/utils';
@@ -23,20 +24,21 @@ export default function ChallengesPage() {
 
   const { data: session, status } = useSession();
   const router = useRouter();
+  const locale = useLocale();
 
   const handleLaunch = (challengeId: string, isPremium?: boolean) => {
     if (status !== 'authenticated') {
       // Redirect to sign-in (NextAuth) or prompt
-      signIn(undefined, { callbackUrl: `/challenges/${challengeId}` });
+      signIn(undefined, { callbackUrl: `/${locale}/challenges/${challengeId}` });
       return;
     }
 
     if (isPremium && !session?.user?.isPaid) {
-      router.push('/pricing');
+      router.push(`/${locale}/pricing`);
       return;
     }
 
-    router.push(`/challenges/${challengeId}`);
+    router.push(`/${locale}/challenges/${challengeId}`);
   };
 
   const handleChallengeSelect = (challengeId: string) => {
@@ -53,7 +55,7 @@ export default function ChallengesPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link 
-              href="/"
+              href={`/${locale}`}
               className="text-green-400 hover:text-green-300 transition-colors"
             >
               <ArrowLeft className="w-6 h-6" />
