@@ -12,6 +12,23 @@
     "signOut": "Sign Out",
     "language": "Language"
   },
+  "signin": {
+    "alreadySignedIn": "Already Signed In",
+    "signedInAs": "You're signed in as",
+    "goToChallenges": "Go to Challenges",
+    "signOut": "Sign Out",
+    "welcomeBack": "Welcome Back",
+    "subtitle": "Sign in to continue your CTF journey",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "error": "Invalid email or password. Please try again.",
+    "signingIn": "Signing in...",
+    "signInButton": "Sign In",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up here"
+  },
   "home": {
     "title": "Startup Security Showdown",
     "subtitle": "Master Frontend Security Through Gamified Challenges",

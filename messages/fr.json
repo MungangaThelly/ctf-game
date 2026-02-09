@@ -12,6 +12,23 @@
     "signOut": "Déconnexion",
     "language": "Langue"
   },
+  "signin": {
+    "alreadySignedIn": "Déjà connecté",
+    "signedInAs": "Vous êtes connecté en tant que",
+    "goToChallenges": "Aller aux défis",
+    "signOut": "Se déconnecter",
+    "welcomeBack": "Bienvenue",
+    "subtitle": "Connectez-vous pour continuer votre aventure CTF",
+    "email": "Email",
+    "emailPlaceholder": "vous@exemple.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "error": "Email ou mot de passe invalide. Veuillez réessayer.",
+    "signingIn": "Connexion en cours...",
+    "signInButton": "Se connecter",
+    "noAccount": "Pas encore de compte ?",
+    "signUpLink": "Inscrivez-vous ici"
+  },
   "home": {
     "title": "Startup Security Showdown",
     "subtitle": "Maîtrisez la sécurité front-end grâce à des défis ludiques",

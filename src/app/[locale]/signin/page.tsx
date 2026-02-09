@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export default function SignInPage() {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations('signin');
   const { data: session } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +30,7 @@ export default function SignInPage() {
     setLoading(false);
     
     if (res && res.error) {
-      setError('Invalid email or password. Please try again.');
+      setError(t('error'));
     } else if (res?.ok) {
       router.push(`/${locale}/challenges`);
     }
@@ -40,22 +41,22 @@ export default function SignInPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
         <div className="w-full max-w-md">
           <div className="bg-slate-800 border border-green-400/20 rounded-lg p-8">
-            <h2 className="text-3xl font-bold text-green-400 mb-2">Already Signed In</h2>
-            <p className="text-gray-400 mb-6">You're signed in as {session.user?.name || session.user?.email}</p>
+            <h2 className="text-3xl font-bold text-green-400 mb-2">{t('alreadySignedIn')}</h2>
+            <p className="text-gray-400 mb-6">{t('signedInAs')} {session.user?.name || session.user?.email}</p>
             
             <div className="space-y-3">
               <Link 
                 href={`/${locale}/challenges`}
                 className="block w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-center transition"
               >
-                Go to Challenges
+                {t('goToChallenges')}
               </Link>
               
               <button 
                 onClick={() => signOut()}
                 className="w-full px-4 py-3 bg-slate-700 hover:bg-slate-600 border border-green-400/20 text-gray-300 rounded-lg font-semibold transition"
               >
-                Sign Out
+                {t('signOut')}
               </button>
             </div>
           </div>
@@ -68,19 +69,19 @@ export default function SignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
       <div className="w-full max-w-md">
         <div className="bg-slate-800 border border-green-400/20 rounded-lg p-8">
-          <h2 className="text-3xl font-bold text-green-400 mb-2">Welcome Back</h2>
-          <p className="text-gray-400 mb-6">Sign in to continue your CTF journey</p>
+          <h2 className="text-3xl font-bold text-green-400 mb-2">{t('welcomeBack')}</h2>
+          <p className="text-gray-400 mb-6">{t('subtitle')}</p>
 
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
-                Email
+                {t('email')}
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
                 required
                 className="w-full px-4 py-2 bg-slate-700 border border-green-400/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400"
               />
@@ -88,13 +89,13 @@ export default function SignInPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
-                Password
+                {t('password')}
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder={t('passwordPlaceholder')}
                 required
                 className="w-full px-4 py-2 bg-slate-700 border border-green-400/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400"
               />
@@ -111,15 +112,15 @@ export default function SignInPage() {
               disabled={loading}
               className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? t('signingIn') : t('signInButton')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-400 text-sm">
-              Don't have an account?{' '}
-              <Link href="/signup" className="text-green-400 hover:underline font-semibold">
-                Sign up here
+              {t('noAccount')}{' '}
+              <Link href={`/${locale}/signup`} className="text-green-400 hover:underline font-semibold">
+                {t('signUpLink')}
               </Link>
             </p>
           </div>
@@ -128,3 +129,4 @@ export default function SignInPage() {
     </div>
   );
 }
+
