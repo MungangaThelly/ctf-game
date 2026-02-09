@@ -3,15 +3,18 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function PricingPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('pricing');
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
     if (!session) {
-      router.push('/signin');
+      router.push(`/${locale}/signin`);
       return;
     }
 
@@ -37,46 +40,46 @@ export default function PricingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 py-24 px-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-white text-center mb-4">
-          Premium Access
+          {t('title')}
         </h1>
         <p className="text-gray-300 text-center mb-12">
-          Unlock advanced CTF challenges and exclusive content
+          {t('subtitle')}
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Free Tier */}
           <div className="border border-gray-600 rounded-lg p-8 bg-slate-800">
-            <h2 className="text-2xl font-bold text-white mb-2">Free</h2>
-            <p className="text-gray-400 mb-6">Always free</p>
+            <h2 className="text-2xl font-bold text-white mb-2">{t('free.title')}</h2>
+            <p className="text-gray-400 mb-6">{t('free.price')}</p>
             <ul className="space-y-3 mb-8 text-gray-300">
-              <li>✓ Basic challenges</li>
-              <li>✓ DOM XSS</li>
-              <li>✓ Auth Bypass</li>
-              <li>✗ Advanced challenges</li>
-              <li>✗ Priority support</li>
+              <li>{t('free.feature1')}</li>
+              <li>{t('free.feature2')}</li>
+              <li>{t('free.feature3')}</li>
+              <li>{t('free.feature4')}</li>
+              <li>{t('free.feature5')}</li>
             </ul>
             <button
               disabled
               className="w-full bg-gray-500 text-white py-2 rounded-lg cursor-not-allowed"
             >
-              Your Current Plan
+              {t('free.button')}
             </button>
           </div>
 
           {/* Premium Tier */}
           <div className="border-2 border-blue-500 rounded-lg p-8 bg-slate-800 relative">
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 px-4 py-1 rounded-full text-sm font-bold text-white">
-              Popular
+              {t('premium.badge')}
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Premium</h2>
-            <p className="text-gray-400 mb-6">$9.99/month</p>
+            <h2 className="text-2xl font-bold text-white mb-2">{t('premium.title')}</h2>
+            <p className="text-gray-400 mb-6">{t('premium.price')}</p>
             <ul className="space-y-3 mb-8 text-gray-300">
-              <li>✓ All basic challenges</li>
-              <li>✓ Advanced challenges</li>
-              <li>✓ JWT Manipulation</li>
-              <li>✓ Open Redirect</li>
-              <li>✓ iframe Sandbox Bypass</li>
-              <li>✓ Priority support</li>
+              <li>{t('premium.feature1')}</li>
+              <li>{t('premium.feature2')}</li>
+              <li>{t('premium.feature3')}</li>
+              <li>{t('premium.feature4')}</li>
+              <li>{t('premium.feature5')}</li>
+              <li>{t('premium.feature6')}</li>
             </ul>
             <button
               onClick={handleCheckout}
@@ -88,10 +91,10 @@ export default function PricingPage() {
               }`}
             >
               {loading
-                ? 'Processing...'
+                ? t('premium.processing')
                 : session?.user?.isPaid
-                ? '✓ Premium Active'
-                : 'Upgrade Now'}
+                ? t('premium.active')
+                : t('premium.upgrade')}
             </button>
           </div>
         </div>
@@ -100,12 +103,12 @@ export default function PricingPage() {
           <div className="text-center mt-8">
             <p className="text-gray-300">
               <a
-                href="/signin"
+                href={`/${locale}/signin`}
                 className="text-blue-400 hover:underline"
               >
-                Sign in
+                {t('signInLink')}
               </a>{' '}
-              to upgrade
+              {t('signInPrompt')}
             </p>
           </div>
         )}

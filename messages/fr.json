@@ -48,6 +48,36 @@
     "haveAccount": "Vous avez déjà un compte ?",
     "signInLink": "Connectez-vous ici"
   },
+  "pricing": {
+    "title": "Accès Premium",
+    "subtitle": "Débloquez les défis CTF avancés et le contenu exclusif",
+    "free": {
+      "title": "Gratuit",
+      "price": "Toujours gratuit",
+      "feature1": "✓ Défis de base",
+      "feature2": "✓ DOM XSS",
+      "feature3": "✓ Contournement d'authentification",
+      "feature4": "✗ Défis avancés",
+      "feature5": "✗ Support prioritaire",
+      "button": "Votre forfait actuel"
+    },
+    "premium": {
+      "badge": "Populaire",
+      "title": "Premium",
+      "price": "9,99$/mois",
+      "feature1": "✓ Tous les défis de base",
+      "feature2": "✓ Défis avancés",
+      "feature3": "✓ Manipulation JWT",
+      "feature4": "✓ Redirection ouverte",
+      "feature5": "✓ Contournement iframe Sandbox",
+      "feature6": "✓ Support prioritaire",
+      "processing": "Traitement en cours...",
+      "active": "✓ Premium actif",
+      "upgrade": "Passer à Premium"
+    },
+    "signInPrompt": "pour passer à Premium",
+    "signInLink": "Se connecter"
+  },
   "home": {
     "title": "Startup Security Showdown",
     "subtitle": "Maîtrisez la sécurité front-end grâce à des défis ludiques",

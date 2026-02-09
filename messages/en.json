@@ -48,6 +48,36 @@
     "haveAccount": "Already have an account?",
     "signInLink": "Sign in here"
   },
+  "pricing": {
+    "title": "Premium Access",
+    "subtitle": "Unlock advanced CTF challenges and exclusive content",
+    "free": {
+      "title": "Free",
+      "price": "Always free",
+      "feature1": "✓ Basic challenges",
+      "feature2": "✓ DOM XSS",
+      "feature3": "✓ Auth Bypass",
+      "feature4": "✗ Advanced challenges",
+      "feature5": "✗ Priority support",
+      "button": "Your Current Plan"
+    },
+    "premium": {
+      "badge": "Popular",
+      "title": "Premium",
+      "price": "$9.99/month",
+      "feature1": "✓ All basic challenges",
+      "feature2": "✓ Advanced challenges",
+      "feature3": "✓ JWT Manipulation",
+      "feature4": "✓ Open Redirect",
+      "feature5": "✓ iframe Sandbox Bypass",
+      "feature6": "✓ Priority support",
+      "processing": "Processing...",
+      "active": "✓ Premium Active",
+      "upgrade": "Upgrade Now"
+    },
+    "signInPrompt": "to upgrade",
+    "signInLink": "Sign in"
+  },
   "home": {
     "title": "Startup Security Showdown",
     "subtitle": "Master Frontend Security Through Gamified Challenges",
