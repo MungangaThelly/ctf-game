@@ -255,7 +255,7 @@ export default function ChallengesPage() {
                     <div className="text-center text-green-300/60">
                       <p className="font-mono">{t('loadingEnvironment')}</p>
                       <p className="text-sm mt-2">
-                        {t('challenges')}: {selectedChallengeData.exploitTarget}
+                        {t('target')}: {selectedChallengeData.exploitTarget}
                       </p>
                     </div>
                   </div>

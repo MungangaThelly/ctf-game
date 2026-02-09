@@ -165,6 +165,7 @@
     "hintWarning": "⚠️ Using hints will reduce your final score for this challenge",
     "challengeEnvironment": "Challenge Environment",
     "loadingEnvironment": "Loading challenge environment...",
+    "target": "Target",
     "launchChallenge": "Launch Challenge",
     "upgradeToLaunch": "Upgrade to Launch",
     "viewSourceCode": "View Source Code",

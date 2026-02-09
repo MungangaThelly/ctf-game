@@ -163,6 +163,7 @@
     "hintWarning": "⚠️ L'utilisation d'indices réduira votre score final pour ce défi",
     "challengeEnvironment": "Environnement de défi",
     "loadingEnvironment": "Chargement de l'environnement de défi...",
+    "target": "Cible",
     "launchChallenge": "Lancer le défi",
     "upgradeToLaunch": "Mettre à niveau pour lancer",
     "viewSourceCode": "Afficher le code source",
