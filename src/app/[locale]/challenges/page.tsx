@@ -287,7 +287,7 @@ export default function ChallengesPage() {
                   {t('selectDescription')}
                 </p>
               </div>
-            )}}
+            )}
           </div>
         </div>
       </div>
