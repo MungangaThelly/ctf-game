@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import Link from 'next/link';
 
 export default function SignInPage() {
   const router = useRouter();
+  const locale = useLocale();
   const { data: session } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +31,7 @@ export default function SignInPage() {
     if (res && res.error) {
       setError('Invalid email or password. Please try again.');
     } else if (res?.ok) {
-      router.push('/challenges');
+      router.push(`/${locale}/challenges`);
     }
   };
 
@@ -43,7 +45,7 @@ export default function SignInPage() {
             
             <div className="space-y-3">
               <Link 
-                href="/challenges"
+                href={`/${locale}/challenges`}
                 className="block w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-center transition"
               >
                 Go to Challenges
