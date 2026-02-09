@@ -1,0 +1,715 @@
+================================================================================
+                    CTF SECURITY PREVENTION & MITIGATION GUIDE
+                         Security Best Practices for Web Vulnerabilities
+================================================================================
+
+Document: Security Best Practices for Web Vulnerabilities
+Date: February 9, 2026
+Version: 1.0
+Coverage: 5 Critical Web Security Challenges
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+
+1. DOM XSS (Cross-Site Scripting) - Feedback Challenge
+2. JWT Manipulation (Token Hijacking) - Auth Challenge
+3. Auth Bypass (localStorage Exploitation) - localStorage Challenge
+4. Open Redirect (Phishing Attacks) - Login Challenge
+5. iframe Sandbox Bypass
+6. Defense in Depth Strategy
+7. Security Checklist
+
+================================================================================
+1. DOM XSS (FEEDBACK CHALLENGE)
+================================================================================
+
+VULNERABILITY OVERVIEW
+─────────────────────
+The application directly injects user input into the DOM using innerHTML,
+allowing attackers to execute arbitrary JavaScript code.
+
+ROOT CAUSE
+──────────
+❌ UNSAFE CODE:
+Direct HTML injection without sanitization
+
+    feedbackElement.innerHTML = userInput; // Direct injection
+
+PREVENTION STRATEGIES
+─────────────────────
+
+STRATEGY 1: Use Text Content Instead of HTML
+─────────────────────────────────────────────
+✅ SAFE - No HTML parsing, plain text only
+
+    // JavaScript
+    const div = document.createElement('div');
+    div.textContent = userInput; // Text only, no script execution
+
+
+STRATEGY 2: Use DOMPurify with Whitelist
+────────────────────────────────────────
+✅ SAFE with strict configuration
+
+    const sanitized = DOMPurify.sanitize(userInput, {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong'],
+      ALLOWED_ATTR: ['class'],
+      KEEP_CONTENT: true
+    });
+    element.innerHTML = sanitized;
+
+
+STRATEGY 3: Use Template Literals with Escaping
+────────────────────────────────────────────────
+✅ SAFE - Escape HTML entities
+
+    function escapeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+    element.innerHTML = `<p>${escapeHTML(userInput)}</p>`;
+
+
+STRATEGY 4: Framework-Level Protection (React)
+───────────────────────────────────────────────
+✅ React automatically escapes by default
+
+    // React automatically escapes text content
+    function Feedback({ text }) {
+      return <div>{text}</div>; // Text is escaped automatically
+    }
+
+    // Only when absolutely necessary:
+    return <div dangerouslySetInnerHTML={{ __html: sanitized }} />;
+
+
+BEST PRACTICES
+──────────────
+✓ Use textContent instead of innerHTML whenever possible
+✓ Never trust user input—always sanitize
+✓ Use security libraries (DOMPurify, Sanitize.js)
+✓ Implement Content Security Policy (CSP) headers
+✓ Use modern frameworks (React, Vue) with auto-escaping
+✓ Regular security audits and pen testing
+
+
+CSP HEADER EXAMPLE
+──────────────────
+Content-Security-Policy: 
+  script-src 'self'; 
+  style-src 'self' 'unsafe-inline'; 
+  img-src 'self' data:;
+
+
+================================================================================
+2. JWT MANIPULATION (AUTH CHALLENGE)
+================================================================================
+
+VULNERABILITY OVERVIEW
+─────────────────────
+Client-side JWT validation without signature verification allows privilege
+escalation by modifying token claims.
+
+ROOT CAUSE
+──────────
+❌ UNSAFE CODE:
+Trusts token without verification
+
+    const decoded = jwtDecode(token); // Just decodes, doesn't verify!
+    if (decoded.role === 'admin') { // Attacker modifies this
+      grantAdminAccess(); // Security bypass
+    }
+
+
+PREVENTION STRATEGIES
+─────────────────────
+
+STRATEGY 1: Always Verify Signatures Server-Side
+─────────────────────────────────────────────────
+✅ SAFE - Verify signature on backend
+
+    const jwt = require('jsonwebtoken');
+    const token = req.headers.authorization?.split(' ')[1];
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      if (decoded.role === 'admin') {
+        grantAdminAccess(); // Only if signature is valid
+      }
+    } catch (err) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+
+STRATEGY 2: Use RS256 (Asymmetric Signing)
+──────────────────────────────────────────
+✅ BEST - RS256 with public/private keys
+
+    // Signing (backend only)
+    const privateKey = fs.readFileSync('private.pem', 'utf8');
+    const token = jwt.sign(payload, privateKey, {
+      algorithm: 'RS256' // Asymmetric - only server can sign
+    });
+
+    // Verification (any server with public key)
+    const publicKey = fs.readFileSync('public.pem', 'utf8');
+    jwt.verify(token, publicKey, {
+      algorithms: ['RS256']
+    });
+
+
+STRATEGY 3: Implement Secure Payload Structure
+───────────────────────────────────────────────
+✅ GOOD - Include additional security measures
+
+    const payload = {
+      sub: user.id,
+      role: user.role,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+      iss: 'your-app', // Issuer
+      aud: 'your-app-users' // Audience
+    };
+
+    const token = jwt.sign(payload, secret, {
+      algorithm: 'HS256',
+      expiresIn: '1h'
+    });
+
+
+STRATEGY 4: Authorization Checks
+─────────────────────────────────
+✅ SAFE - Server-side authorization
+
+    async function requireAdmin(req, res, next) {
+      const decoded = jwt.verify(req.token, secret);
+      
+      // Don't trust token claims alone - verify from DB
+      const user = await User.findById(decoded.sub);
+      
+      if (user.role !== 'admin') {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+      
+      next();
+    }
+
+
+SECURE TOKEN STORAGE
+────────────────────
+✅ SAFE - httpOnly cookie (prevents XSS theft)
+
+    res.cookie('token', jwt, {
+      httpOnly: true,      // JS can't access
+      secure: true,        // HTTPS only
+      sameSite: 'strict',  // CSRF protection
+      maxAge: 3600000      // 1 hour
+    });
+
+❌ UNSAFE - localStorage (vulnerable to XSS)
+
+    localStorage.setItem('token', jwt); // Don't do this!
+
+
+BEST PRACTICES
+──────────────
+✓ Always verify JWTs on the backend—never trust client claims
+✓ Use RS256 (asymmetric) for multi-server setups
+✓ Set short expiration times (15-60 minutes)
+✓ Use refresh tokens for long sessions
+✓ Store tokens in httpOnly cookies, not localStorage
+✓ Implement token revocation/blacklist for logout
+
+
+================================================================================
+3. AUTH BYPASS (LOCALSTORAGE CHALLENGE)
+================================================================================
+
+VULNERABILITY OVERVIEW
+─────────────────────
+Authentication state stored in client-side localStorage can be modified by
+attackers directly via browser DevTools or JavaScript injection.
+
+ROOT CAUSE
+──────────
+❌ UNSAFE CODE:
+Trusts client-side storage
+
+    localStorage.setItem('isAdmin', 'true');
+    if (localStorage.getItem('isAdmin') === 'true') {
+      grantAdminAccess(); // Anyone can set this!
+    }
+
+
+PREVENTION STRATEGIES
+─────────────────────
+
+STRATEGY 1: Use Server-Side Sessions
+─────────────────────────────────────
+✅ SAFE - Session stored on server
+
+    const session = require('express-session');
+    
+    app.use(session({
+      store: new RedisStore(), // Server-side storage
+      secret: process.env.SECRET,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    }));
+
+    app.get('/admin', (req, res) => {
+      if (req.session?.user?.role !== 'admin') {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+      // Safe - verified on server
+    });
+
+
+STRATEGY 2: Use Secure Cookies
+───────────────────────────────
+✅ SAFE - httpOnly cookies (XSS-resistant)
+
+    res.cookie('auth', token, {
+      httpOnly: true,      // JavaScript can't access
+      secure: true,        // HTTPS only
+      sameSite: 'strict',  // CSRF protection
+      signed: true         // Tamper-proof
+    });
+
+    // Verify on every request
+    app.use((req, res, next) => {
+      const token = req.signedCookies.auth;
+      if (!token) return res.status(401).send('Unauthorized');
+      // Verify token...
+    });
+
+
+STRATEGY 3: Never Trust Client-Side Data
+─────────────────────────────────────────
+✅ SAFE - Always re-verify from server
+
+    app.get('/admin', requireAuth, async (req, res) => {
+      // 1. Verify session/token
+      const decoded = jwt.verify(req.token, secret);
+      
+      // 2. Query database for current user
+      const user = await User.findById(decoded.sub);
+      
+      // 3. Check permissions from DB
+      if (user.role !== 'admin') {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+      
+      // Only now grant access
+      res.json({ data: 'admin-only' });
+    });
+
+
+STRATEGY 4: Implement CSRF Protection
+──────────────────────────────────────
+✅ SAFE - CSRF tokens for state-changing operations
+
+    const csrf = require('csurf');
+    const cookieParser = require('cookie-parser');
+
+    app.use(cookieParser());
+    app.use(csrf({ cookie: true }));
+
+    app.post('/admin/action', (req, res, next) => {
+      // CSRF middleware automatically validates
+      // Only requests with valid token proceed
+      res.json({ success: true });
+    });
+
+    // Include in forms
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+
+BEST PRACTICES
+──────────────
+✓ Store sensitive data on the server, not client
+✓ Use httpOnly cookies for session tokens
+✓ Implement CSRF protection for state-changing requests
+✓ Never trust the client for authorization decisions
+✓ Implement rate limiting on sensitive endpoints
+✓ Log all authentication/authorization events
+✓ Regular security audits
+
+
+================================================================================
+4. OPEN REDIRECT (LOGIN CHALLENGE)
+================================================================================
+
+VULNERABILITY OVERVIEW
+─────────────────────
+Unvalidated redirect parameters allow attackers to redirect users to malicious
+sites, enabling phishing attacks.
+
+ROOT CAUSE
+──────────
+❌ UNSAFE CODE:
+No validation on redirect URL
+
+    const redirect = req.query.redirect;
+    res.redirect(redirect); // Could be https://evil.com
+
+
+PREVENTION STRATEGIES
+─────────────────────
+
+STRATEGY 1: Whitelist Allowed URLs
+───────────────────────────────────
+✅ SAFE - Whitelist specific domains
+
+    const ALLOWED_REDIRECTS = [
+      'https://myapp.com',
+      'https://www.myapp.com',
+      'https://dashboard.myapp.com'
+    ];
+
+    function isValidRedirect(url) {
+      try {
+        const parsed = new URL(url);
+        return ALLOWED_REDIRECTS.some(allowed => 
+          parsed.origin === new URL(allowed).origin
+        );
+      } catch {
+        return false;
+      }
+    }
+
+    app.post('/login', (req, res) => {
+      const redirect = req.body.redirect || '/dashboard';
+      
+      if (!isValidRedirect(redirect)) {
+        redirect = '/dashboard'; // Default safe redirect
+      }
+      res.redirect(redirect);
+    });
+
+
+STRATEGY 2: Use Relative URLs Only
+───────────────────────────────────
+✅ SAFE - Relative paths can't redirect externally
+
+    function isRelativePath(path) {
+      return path.startsWith('/') && !path.startsWith('//');
+    }
+
+    if (isRelativePath(userProvidedRedirect)) {
+      res.redirect(userProvidedRedirect); // Safe
+    } else {
+      res.redirect('/dashboard'); // Default
+    }
+
+
+STRATEGY 3: Validate URL Structure
+───────────────────────────────────
+✅ SAFE - Comprehensive validation
+
+    function isValidRedirect(url, baseUrl) {
+      try {
+        const parsed = new URL(url, baseUrl);
+        
+        // 1. Must be same origin
+        const base = new URL(baseUrl);
+        if (parsed.origin !== base.origin) return false;
+        
+        // 2. Prevent protocol-relative URLs
+        if (url.startsWith('//')) return false;
+        
+        // 3. Prevent dangerous protocols
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+          return false;
+        }
+        
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+
+STRATEGY 4: Use Post-Login Redirect Safely
+───────────────────────────────────────────
+✅ SAFE - Store redirect in session
+
+    app.post('/login', (req, res) => {
+      // Authenticate...
+      
+      let redirect = req.query.redirect || '/dashboard';
+      
+      // Validate it
+      if (!isValidRedirect(redirect)) {
+        redirect = '/dashboard';
+      }
+      
+      // Store in session, not URL
+      req.session.postLoginRedirect = redirect;
+      
+      // Don't expose redirect in URL
+      res.redirect('/verify-email');
+    });
+
+    app.get('/verify-email', (req, res) => {
+      const redirect = req.session.postLoginRedirect || '/dashboard';
+      delete req.session.postLoginRedirect; // Clear after use
+      
+      res.redirect(redirect);
+    });
+
+
+BEST PRACTICES
+──────────────
+✓ Never redirect to user-supplied URLs without validation
+✓ Whitelist allowed redirect URLs
+✓ Use relative URLs when possible
+✓ Block protocol-relative URLs (//)
+✓ Block non-http(s) protocols
+✓ Log all redirects for security monitoring
+✓ Implement login rate limiting
+
+
+================================================================================
+5. IFRAME SANDBOX BYPASS
+================================================================================
+
+VULNERABILITY OVERVIEW
+─────────────────────
+Overly permissive iframe sandbox attributes allow cross-origin communication
+and script execution, enabling privilege escalation attacks.
+
+ROOT CAUSE
+──────────
+❌ UNSAFE CODE:
+Too many permissions
+
+    <iframe sandbox="allow-scripts allow-same-origin allow-forms">
+      <!-- Can execute scripts AND communicate with parent -->
+    </iframe>
+
+
+PREVENTION STRATEGIES
+─────────────────────
+
+STRATEGY 1: Use Minimal Sandbox Restrictions
+─────────────────────────────────────────────
+✅ SAFEST - No permissions at all
+
+    <iframe src="untrusted-content.html" sandbox="" title="Sandboxed content"></iframe>
+
+✅ SAFE - Only allow basic display
+
+    <iframe src="trusted-content.html" 
+            sandbox="allow-forms" 
+            title="Embedded forms"></iframe>
+
+❌ UNSAFE - Too permissive
+
+    <iframe sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+
+
+STRATEGY 2: Safe Cross-Origin Communication
+────────────────────────────────────────────
+✅ SAFE - Validate origin strictly
+
+    // Parent (main app)
+    window.addEventListener('message', (event) => {
+      // Check origin explicitly
+      if (event.origin !== 'https://trusted-site.com') {
+        console.warn('Blocked message from untrusted origin');
+        return; // Reject
+      }
+      
+      // Validate data structure
+      if (event.data && event.data.type === 'SAFE_ACTION') {
+        handleSafeAction(event.data);
+      }
+    });
+
+    // Send message to iframe
+    iframe.contentWindow.postMessage(
+      { type: 'INIT', config: {...} },
+      'https://trusted-site.com' // Specific origin
+    );
+
+
+STRATEGY 3: Production-Ready iframe
+────────────────────────────────────
+✅ SAFE - Best practices example
+
+    <iframe 
+      src="https://trusted-cdn.example.com/static-content.html"
+      sandbox="allow-same-origin"
+      title="Embedded Content"
+      loading="lazy"
+    ></iframe>
+
+    <script>
+    window.addEventListener('message', (event) => {
+      // Strict origin validation
+      if (event.origin !== 'https://trusted-cdn.example.com') {
+        return;
+      }
+      
+      // Type checking
+      if (!event.data || typeof event.data !== 'object') {
+        return;
+      }
+      
+      // Whitelist actions
+      const allowedActions = ['log', 'notify', 'update_display'];
+      if (!allowedActions.includes(event.data.action)) {
+        return;
+      }
+      
+      handleAction(event.data);
+    });
+    </script>
+
+
+STRATEGY 4: Use Content Security Policy for iframe
+────────────────────────────────────────────────────
+
+    <iframe src="https://trusted-site.com"
+            sandbox="allow-same-origin allow-scripts"
+            csp="script-src 'self' https://cdn.example.com;">
+    </iframe>
+
+
+BEST PRACTICES
+──────────────
+✓ Use sandbox="" (empty) when possible—maximum protection
+✓ Only add required permissions (allow-same-origin, allow-scripts, allow-forms)
+✓ Always validate message origin in postMessage listeners
+✓ Use specific origins instead of '*' in postMessage
+✓ Implement Permissions-Policy headers
+✓ Don't trust iframe content—treat as untrusted
+✓ Implement Content Security Policy (CSP)
+✓ Regular security updates for embedded content
+
+
+================================================================================
+DEFENSE IN DEPTH STRATEGY
+================================================================================
+
+Security is most effective when implemented across multiple layers:
+
+
+LAYER 1: INPUT VALIDATION
+──────────────────────────
+✓ Validate all user inputs (frontend + backend)
+✓ Use whitelists, not blacklists
+✓ Escape special characters
+
+
+LAYER 2: ENCODING & SANITIZATION
+─────────────────────────────────
+✓ HTML escape output
+✓ JSON escape for APIs
+✓ SQL parameterized queries
+
+
+LAYER 3: AUTHENTICATION & AUTHORIZATION
+────────────────────────────────────────
+✓ Strong session management
+✓ Multi-factor authentication
+✓ Role-based access control (RBAC)
+
+
+LAYER 4: NETWORK SECURITY
+──────────────────────────
+✓ HTTPS only (TLS 1.3+)
+✓ HSTS headers
+✓ Secure cookies (httpOnly, Secure, SameSite)
+
+
+LAYER 5: CONTENT SECURITY POLICY
+─────────────────────────────────
+Content-Security-Policy: 
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://trusted-cdn.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self';
+  connect-src 'self' https://api.example.com;
+  frame-ancestors 'none';
+
+
+LAYER 6: MONITORING & LOGGING
+──────────────────────────────
+✓ Log all authentication events
+✓ Monitor for suspicious patterns
+✓ Alert on anomalies
+✓ Regular security audits
+
+
+================================================================================
+SECURITY CHECKLIST
+================================================================================
+
+IMPLEMENTATION SECURITY
+
+☐ Sanitize all user inputs with DOMPurify
+☐ Verify JWTs server-side with signature checking
+☐ Store auth data on server (not localStorage)
+☐ Validate all redirects against whitelist
+☐ Use restrictive iframe sandbox attributes
+☐ Implement HTTPS/TLS everywhere
+☐ Use httpOnly cookies for tokens
+☐ Implement CSRF protection
+☐ Add Content-Security-Policy headers
+☐ Regular penetration testing
+☐ Keep dependencies updated
+☐ Implement rate limiting
+☐ Add security logging & monitoring
+☐ Enable 2FA/MFA for accounts
+☐ Regular security audits
+☐ Security training for developers
+
+
+================================================================================
+ADDITIONAL RESOURCES
+================================================================================
+
+OWASP Top 10: https://owasp.org/Top10/
+- Injection
+- Broken Authentication
+- Sensitive Data Exposure
+- Broken Access Control
+- Security Misconfiguration
+- XSS
+- CSRF
+- Using Components with Known Vulnerabilities
+- Insufficient Logging & Monitoring
+
+Security Libraries:
+- DOMPurify (XSS prevention)
+- helmet.js (Express.js security headers)
+- jsonwebtoken (JWT handling)
+- bcrypt (Password hashing)
+- express-rate-limit (Rate limiting)
+
+Testing Tools:
+- OWASP ZAP (Penetration testing)
+- Burp Suite (Web application security)
+- npm audit (Dependency vulnerabilities)
+- Snyk (Vulnerability management)
+
+================================================================================
+DOCUMENT INFORMATION
+================================================================================
+
+Generated: February 9, 2026
+Version: 1.0
+Author: CTF Security Team
+
+This document covers prevention and mitigation strategies for 5 critical
+web security vulnerabilities commonly found in web applications.
+
+For questions or updates, refer to OWASP and security best practices.
+
+================================================================================

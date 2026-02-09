@@ -103,7 +103,7 @@ export function Navigation() {
         {/* Session actions */}
         {session ? (
           <div className="flex items-center space-x-3">
-            <div className="text-sm font-mono text-green-300">{session.user?.username || session.user?.name}</div>
+            <div className="text-sm font-mono text-green-300">{session.user?.name}</div>
             {session.user?.email === 'admin@example.com' && (
               <Link href={getLocaleHref('/admin')} className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-mono text-sm flex items-center space-x-1">
                 <BarChart3 className="w-4 h-4" />
