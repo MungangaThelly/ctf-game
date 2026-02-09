@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Users, DollarSign, TrendingUp, Lock } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface Analytics {
   summary: {
@@ -25,6 +26,8 @@ interface Analytics {
 }
 
 export default function AdminDashboard() {
+  const locale = useLocale();
+  const t = useTranslations('admin');
   const { data: session, status } = useSession();
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,16 +44,16 @@ export default function AdminDashboard() {
       const res = await fetch('/api/admin/analytics');
       if (!res.ok) {
         if (res.status === 401) {
-          setError('You do not have admin access.');
+          setError(t('noAdminAccess'));
         } else {
-          setError('Failed to fetch analytics');
+          setError(t('failedToFetch'));
         }
         return;
       }
       const data = await res.json();
       setAnalytics(data);
     } catch (err) {
-      setError('Error loading analytics');
+      setError(t('errorLoading'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -61,7 +64,7 @@ export default function AdminDashboard() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
-        <div className="text-green-400 font-mono">Loading...</div>
+        <div className="text-green-400 font-mono">{t('loading')}</div>
       </div>
     );
   }
@@ -70,13 +73,13 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
         <div className="max-w-md p-8 border border-green-400/30 rounded-lg bg-black/50">
-          <h2 className="text-2xl font-mono font-bold text-green-400 mb-4">Admin Access Required</h2>
-          <p className="text-green-300/80 font-mono mb-6">Please sign in with an admin account.</p>
+          <h2 className="text-2xl font-mono font-bold text-green-400 mb-4">{t('accessRequired')}</h2>
+          <p className="text-green-300/80 font-mono mb-6">{t('pleaseSignIn')}</p>
           <Link
-            href="/signin"
+            href={`/${locale}/signin`}
             className="block w-full px-6 py-3 bg-green-500/20 border border-green-400 text-green-400 rounded hover:bg-green-500/30 transition-colors text-center font-mono"
           >
-            Sign In
+            {t('signIn')}
           </Link>
         </div>
       </div>
@@ -90,16 +93,16 @@ export default function AdminDashboard() {
         <div className="max-w-md p-8 border border-red-400/30 rounded-lg bg-black/50">
           <div className="flex items-center space-x-2 text-red-400 mb-4">
             <Lock className="w-6 h-6" />
-            <h2 className="text-2xl font-mono font-bold">Access Denied</h2>
+            <h2 className="text-2xl font-mono font-bold">{t('accessDenied')}</h2>
           </div>
           <p className="text-red-300/80 font-mono mb-6">
-            This dashboard is only available to administrators.
+            {t('adminsOnly')}
           </p>
           <Link
-            href="/challenges"
+            href={`/${locale}/challenges`}
             className="block w-full px-6 py-3 bg-green-500/20 border border-green-400 text-green-400 rounded hover:bg-green-500/30 transition-colors text-center font-mono"
           >
-            Go to Challenges
+            {t('goToChallenges')}
           </Link>
         </div>
       </div>
@@ -114,12 +117,12 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link
-              href="/challenges"
+              href={`/${locale}/challenges`}
               className="text-green-400 hover:text-green-300 transition-colors"
             >
               <ArrowLeft className="w-6 h-6" />
             </Link>
-            <h1 className="text-3xl font-mono font-bold neon-glow">Admin Dashboard</h1>
+            <h1 className="text-3xl font-mono font-bold neon-glow">{t('title')}</h1>
           </div>
           <div className="text-green-400/60 font-mono text-sm">
             {session?.user?.email}
@@ -136,31 +139,31 @@ export default function AdminDashboard() {
 
         {loading ? (
           <div className="text-green-400 font-mono text-center py-12">
-            Loading analytics...
+            {t('loadingAnalytics')}
           </div>
         ) : analytics ? (
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
-                title="Total Users"
+                title={t('totalUsers')}
                 value={analytics.summary.totalUsers}
                 icon={<Users className="w-6 h-6" />}
               />
               <StatCard
-                title="Paid Users"
+                title={t('paidUsers')}
                 value={analytics.summary.paidUsers}
-                subtext={`${analytics.summary.conversionRate}% conversion`}
+                subtext={`${analytics.summary.conversionRate}% ${t('conversion')}`}
                 highlight
               />
               <StatCard
-                title="Monthly Revenue"
+                title={t('monthlyRevenue')}
                 value={`$${analytics.summary.mrrRevenue}`}
-                subtext="MRR"
+                subtext={t('mrr')}
                 icon={<DollarSign className="w-6 h-6" />}
               />
               <StatCard
-                title="New (30 days)"
+                title={t('newUsers30')}
                 value={analytics.summary.newUsersLast30Days}
                 icon={<TrendingUp className="w-6 h-6" />}
               />
@@ -168,7 +171,7 @@ export default function AdminDashboard() {
 
             {/* User Growth Chart */}
             <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
-              <h2 className="text-xl font-mono font-bold text-green-400 mb-6">User Growth (Last 8 Weeks)</h2>
+              <h2 className="text-xl font-mono font-bold text-green-400 mb-6">{t('userGrowth')}</h2>
               <div className="flex items-end space-x-2 h-48">
                 {analytics.usersByWeek.map((item, idx) => (
                   <div key={idx} className="flex-1 flex flex-col items-center">
@@ -184,14 +187,14 @@ export default function AdminDashboard() {
 
             {/* Recent Paid Signups */}
             <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
-              <h2 className="text-xl font-mono font-bold text-green-400 mb-6">Recent Paid Signups</h2>
+              <h2 className="text-xl font-mono font-bold text-green-400 mb-6">{t('recentPaidSignups')}</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm font-mono">
                   <thead>
                     <tr className="border-b border-green-400/20">
-                      <th className="text-left py-3 px-4 text-green-400">Email</th>
-                      <th className="text-left py-3 px-4 text-green-400">Name</th>
-                      <th className="text-left py-3 px-4 text-green-400">Date</th>
+                      <th className="text-left py-3 px-4 text-green-400">{t('email')}</th>
+                      <th className="text-left py-3 px-4 text-green-400">{t('name')}</th>
+                      <th className="text-left py-3 px-4 text-green-400">{t('date')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -208,7 +211,7 @@ export default function AdminDashboard() {
                     ) : (
                       <tr>
                         <td colSpan={3} className="py-6 text-center text-gray-400">
-                          No paid signups yet
+                          {t('noPaidSignups')}
                         </td>
                       </tr>
                     )}
@@ -220,19 +223,19 @@ export default function AdminDashboard() {
             {/* Summary Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
-                <p className="text-gray-400 text-sm mb-2">Free Users</p>
+                <p className="text-gray-400 text-sm mb-2">{t('freeUsers')}</p>
                 <p className="text-3xl font-mono font-bold text-green-300">
                   {analytics.summary.freeUsers}
                 </p>
               </div>
               <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
-                <p className="text-gray-400 text-sm mb-2">Total Revenue (Cumulative)</p>
+                <p className="text-gray-400 text-sm mb-2">{t('totalRevenue')}</p>
                 <p className="text-3xl font-mono font-bold text-green-300">
                   ${analytics.summary.totalRevenue}
                 </p>
               </div>
               <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
-                <p className="text-gray-400 text-sm mb-2">Conversion Rate</p>
+                <p className="text-gray-400 text-sm mb-2">{t('conversionRate')}</p>
                 <p className="text-3xl font-mono font-bold text-green-300">
                   {analytics.summary.conversionRate}%
                 </p>

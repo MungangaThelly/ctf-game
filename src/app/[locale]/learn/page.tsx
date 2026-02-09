@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { BookOpen, Shield, Code, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import { CATEGORIES } from '@/lib/config';
 import { Terminal, CodeBlock, MatrixBackground } from '@/components/ui/hacker-ui';
 
@@ -297,6 +298,8 @@ app.get('/login', (req, res) => {
 ];
 
 export default function LearnPage() {
+  const locale = useLocale();
+  const t = useTranslations('learn');
   const [selectedGuide, setSelectedGuide] = useState<string>(vulnerabilityGuides[0].id);
   const [showVulnerableCode, setShowVulnerableCode] = useState(true);
 
@@ -322,10 +325,10 @@ export default function LearnPage() {
             <BookOpen className="w-8 h-8 text-green-400" />
             <div>
               <h1 className="text-3xl font-mono font-bold neon-glow text-green-400">
-                Security Knowledge Base
+                {t('title')}
               </h1>
               <p className="text-green-300/80">
-                Learn about web security vulnerabilities and how to prevent them
+                {t('description')}
               </p>
             </div>
           </div>
@@ -335,7 +338,7 @@ export default function LearnPage() {
           
           {/* Vulnerability List */}
           <div className="lg:col-span-1">
-            <Terminal title="Vulnerability Types" className="p-0">
+            <Terminal title={t('vulnerabilityTypes')} className="p-0">
               <div className="space-y-2">
                 {vulnerabilityGuides.map((guide) => {
                   const category = CATEGORIES[guide.category];
@@ -372,7 +375,7 @@ export default function LearnPage() {
             {currentGuide && (
               <>
                 {/* Header */}
-                <Terminal title={`${CATEGORIES[currentGuide.category].name} Guide`} className="p-0">
+                <Terminal title={`${CATEGORIES[currentGuide.category].name} ${t('guide')}`} className="p-0">
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div>
@@ -383,7 +386,7 @@ export default function LearnPage() {
                       </div>
                       <div className="flex flex-col items-end space-y-2">
                         <span className={`px-3 py-1 rounded font-mono text-sm ${getSeverityColor(currentGuide.severity)}`}>
-                          {currentGuide.severity} Risk
+                          {currentGuide.severity} {t('risk')}
                         </span>
                         <div className="text-right text-sm text-green-300/60">
                           <div>{currentGuide.owasp}</div>
@@ -396,11 +399,11 @@ export default function LearnPage() {
 
                 {/* Impact & Prevention */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <Terminal title="Security Impact" className="p-0">
+                  <Terminal title={t('securityImpact')} className="p-0">
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2 mb-3">
                         <AlertTriangle className="w-5 h-5 text-red-400" />
-                        <span className="font-mono text-red-400">Potential Impact</span>
+                        <span className="font-mono text-red-400">{t('potentialImpact')}</span>
                       </div>
                       {currentGuide.impact.map((impact, index) => (
                         <div key={index} className="flex items-start space-x-2">
@@ -411,11 +414,11 @@ export default function LearnPage() {
                     </div>
                   </Terminal>
 
-                  <Terminal title="Prevention Methods" className="p-0">
+                  <Terminal title={t('preventionMethods')} className="p-0">
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2 mb-3">
                         <CheckCircle className="w-5 h-5 text-green-400" />
-                        <span className="font-mono text-green-400">Prevention</span>
+                        <span className="font-mono text-green-400">{t('prevention')}</span>
                       </div>
                       {currentGuide.prevention.map((prevention, index) => (
                         <div key={index} className="flex items-start space-x-2">
@@ -428,10 +431,10 @@ export default function LearnPage() {
                 </div>
 
                 {/* Code Examples */}
-                <Terminal title="Code Examples" className="p-0">
+                <Terminal title={t('codeExamples')} className="p-0">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-mono text-green-400">Implementation Examples</h3>
+                      <h3 className="font-mono text-green-400">{t('implementationExamples')}</h3>
                       <div className="flex space-x-2">
                         <button
                           onClick={() => setShowVulnerableCode(true)}
@@ -441,7 +444,7 @@ export default function LearnPage() {
                               : 'text-red-300 hover:text-red-400'
                           }`}
                         >
-                          Vulnerable
+                          {t('vulnerable')}
                         </button>
                         <button
                           onClick={() => setShowVulnerableCode(false)}
@@ -451,7 +454,7 @@ export default function LearnPage() {
                               : 'text-green-300 hover:text-green-400'
                           }`}
                         >
-                          Secure
+                          {t('secure')}
                         </button>
                       </div>
                     </div>
@@ -465,11 +468,11 @@ export default function LearnPage() {
                 </Terminal>
 
                 {/* Real-world Examples */}
-                <Terminal title="Real-world Cases" className="p-0">
+                <Terminal title={t('realWorldCases')} className="p-0">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2 mb-3">
                       <ExternalLink className="w-5 h-5 text-blue-400" />
-                      <span className="font-mono text-blue-400">Notable Security Incidents</span>
+                      <span className="font-mono text-blue-400">{t('notableIncidents')}</span>
                     </div>
                     {currentGuide.realWorldExamples.map((example, index) => (
                       <div key={index} className="flex items-start space-x-2 p-3 bg-blue-400/5 border border-blue-400/20 rounded">

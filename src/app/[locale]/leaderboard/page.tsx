@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Trophy, Medal, Crown, Zap, Clock, Target } from 'lucide-react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import { gameStore } from '@/store/gameStore';
 import { formatScore, formatTime, getAchievementBadge } from '@/lib/utils';
 import { Terminal, ProgressBar, MatrixBackground } from '@/components/ui/hacker-ui';
@@ -73,6 +74,8 @@ const mockLeaderboardData: LeaderboardEntry[] = [
 ];
 
 export default function LeaderboardPage() {
+  const locale = useLocale();
+  const t = useTranslations('leaderboard');
   const [gameState, setGameState] = useState(gameStore.getGameState());
   const [userStats, setUserStats] = useState({
     score: 0,
@@ -134,15 +137,15 @@ export default function LeaderboardPage() {
       <header className="border-b border-green-400/20 p-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Link href="/" className="text-green-400 hover:text-green-300">
+            <Link href={`/${locale}`} className="text-green-400 hover:text-green-300">
               <ArrowLeft className="w-6 h-6" />
             </Link>
             <Trophy className="w-8 h-8 text-yellow-400" />
             <div>
               <h1 className="text-2xl font-mono font-bold neon-glow text-green-400">
-                Leaderboard
+                {t('title')}
               </h1>
-              <p className="text-green-300/80 text-sm">Top security researchers</p>
+              <p className="text-green-300/80 text-sm">{t('subtitle')}</p>
             </div>
           </div>
         </div>
@@ -153,30 +156,30 @@ export default function LeaderboardPage() {
           
           {/* Current User Stats */}
           <div className="lg:col-span-1 space-y-6">
-            <Terminal title="Your Stats" className="p-0">
+            <Terminal title={t('yourStats')} className="p-0">
               <div className="space-y-4">
                 <div className="text-center">
                   <div className="text-4xl mb-2">{getRankIcon(userStats.rank)}</div>
                   <div className="text-2xl font-mono text-green-400 neon-glow">
                     #{userStats.rank}
                   </div>
-                  <div className="text-green-300/60 text-sm">Current Rank</div>
+                  <div className="text-green-300/60 text-sm">{t('currentRank')}</div>
                 </div>
 
                 <div className="border-t border-green-400/20 pt-4 space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-green-300">Score:</span>
+                    <span className="text-green-300">{t('score')}</span>
                     <span className="font-mono text-green-400">{formatScore(userStats.score)}</span>
                   </div>
                   
                   <div className="flex justify-between">
-                    <span className="text-green-300">Completed:</span>
+                    <span className="text-green-300">{t('completed')}</span>
                     <span className="font-mono text-green-400">{userStats.completed}/{userStats.total}</span>
                   </div>
                   
                   <div>
                     <div className="flex justify-between mb-2">
-                      <span className="text-green-300">Progress:</span>
+                      <span className="text-green-300">{t('progress')}</span>
                       <span className="font-mono text-green-400">
                         {Math.round((userStats.completed / userStats.total) * 100)}%
                       </span>
@@ -189,29 +192,29 @@ export default function LeaderboardPage() {
                       <div className="text-lg">
                         {getAchievementBadge(userStats.completed, userStats.total)}
                       </div>
-                      <div className="text-green-300/60 text-sm mt-1">Achievement Badge</div>
+                      <div className="text-green-300/60 text-sm mt-1">{t('achievementBadge')}</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-green-400/20">
                   <Link 
-                    href="/challenges"
+                    href={`/${locale}/challenges`}
                     className="w-full bg-green-400 text-black px-4 py-2 rounded font-mono font-bold hover:bg-green-300 transition-colors text-center block"
                   >
-                    Continue Challenges
+                    {t('continueChallenges')}
                   </Link>
                 </div>
               </div>
             </Terminal>
 
             {/* Global Stats */}
-            <Terminal title="Global Stats" className="p-0">
+            <Terminal title={t('globalStats')} className="p-0">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Target className="w-4 h-4 text-blue-400" />
-                    <span className="text-green-300">Total Players:</span>
+                    <span className="text-green-300">{t('totalPlayers')}</span>
                   </div>
                   <span className="font-mono text-green-400">1,247</span>
                 </div>
@@ -219,7 +222,7 @@ export default function LeaderboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Zap className="w-4 h-4 text-yellow-400" />
-                    <span className="text-green-300">Exploits Found:</span>
+                    <span className="text-green-300">{t('exploitsFound')}</span>
                   </div>
                   <span className="font-mono text-green-400">3,891</span>
                 </div>
@@ -227,7 +230,7 @@ export default function LeaderboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Clock className="w-4 h-4 text-purple-400" />
-                    <span className="text-green-300">Avg. Completion:</span>
+                    <span className="text-green-300">{t('avgCompletion')}</span>
                   </div>
                   <span className="font-mono text-green-400">35m 22s</span>
                 </div>
@@ -237,7 +240,7 @@ export default function LeaderboardPage() {
 
           {/* Leaderboard */}
           <div className="lg:col-span-2">
-            <Terminal title="Top Hackers" className="p-0">
+            <Terminal title={t('topHackers')} className="p-0">
               <div className="space-y-3">
                 {leaderboardData.map((entry, index) => (
                   <div 
@@ -266,7 +269,7 @@ export default function LeaderboardPage() {
                           {formatScore(entry.score)}
                         </div>
                         <div className="text-sm text-green-300/60">
-                          {entry.completedChallenges}/{entry.totalChallenges} challenges
+                          {entry.completedChallenges}/{entry.totalChallenges} {t('challenges')}
                         </div>
                         <div className="text-xs text-green-300/40">
                           {formatTime(entry.timeToComplete)}
@@ -290,7 +293,7 @@ export default function LeaderboardPage() {
               {userStats.rank > 5 && (
                 <div className="mt-6 pt-4 border-t border-green-400/20">
                   <div className="text-center text-green-300/60 font-mono text-sm mb-3">
-                    Your Position
+                    {t('yourPosition')}
                   </div>
                   <div className="p-4 rounded-lg border border-green-400/20 bg-green-400/5">
                     <div className="flex items-center justify-between">
@@ -304,7 +307,7 @@ export default function LeaderboardPage() {
                         
                         <div>
                           <div className="font-mono text-lg font-bold text-green-400">
-                            You
+                            {t('you')}
                           </div>
                           <div className="text-sm text-green-300/60">
                             {getAchievementBadge(userStats.completed, userStats.total)}
@@ -317,7 +320,7 @@ export default function LeaderboardPage() {
                           {formatScore(userStats.score)}
                         </div>
                         <div className="text-sm text-green-300/60">
-                          {userStats.completed}/{userStats.total} challenges
+                          {userStats.completed}/{userStats.total} {t('challenges')}
                         </div>
                       </div>
                     </div>

@@ -4,8 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
+  const locale = useLocale();
+  const t = useTranslations('profile');
   const { data: session } = useSession();
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -19,9 +22,9 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-300 mb-4">Please sign in to view your profile</p>
-          <Link href="/signin" className="text-blue-400 hover:underline">
-            Go to Sign In
+          <p className="text-gray-300 mb-4">{t('pleaseSignIn')}</p>
+          <Link href={`/${locale}/signin`} className="text-blue-400 hover:underline">
+            {t('goToSignIn')}
           </Link>
         </div>
       </div>
@@ -47,14 +50,14 @@ export default function ProfilePage() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage('Profile updated successfully! 🎉');
+        setMessage(t('success'));
         // Refresh session to show updated data
         setTimeout(() => router.refresh(), 1000);
       } else {
-        setMessage('Error updating profile: ' + (data.error || 'Unknown error'));
+        setMessage(t('errorUpdating') + ': ' + (data.error || t('unknownError')));
       }
     } catch (error) {
-      setMessage('Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      setMessage(t('error') + ': ' + (error instanceof Error ? error.message : t('unknownError')));
     } finally {
       setLoading(false);
     }
@@ -64,23 +67,23 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 py-24 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-slate-800 border border-green-400/20 rounded-lg p-8">
-          <h1 className="text-3xl font-bold text-green-400 mb-2">Your Profile</h1>
-          <p className="text-gray-300 mb-6 text-lg">Manage your account details and subscription</p>
+          <h1 className="text-3xl font-bold text-green-400 mb-2">{t('title')}</h1>
+          <p className="text-gray-300 mb-6 text-lg">{t('subtitle')}</p>
 
           {/* Account Info Section */}
           <div className="mb-8 p-6 bg-slate-900 rounded-lg border border-green-400/10">
-            <h2 className="text-xl font-bold text-green-300 mb-4">Account Information</h2>
+            <h2 className="text-xl font-bold text-green-300 mb-4">{t('accountInfo')}</h2>
             <div className="space-y-3 text-sm">
               <div>
-                <span className="text-gray-400">Email:</span>
+                <span className="text-gray-400">{t('email')}:</span>
                 <p className="text-green-300 font-mono">{session.user?.email}</p>
               </div>
               <div>
-                <span className="text-gray-400">Username:</span>
+                <span className="text-gray-400">{t('username')}:</span>
                 <p className="text-green-300 font-mono">{session.user?.username}</p>
               </div>
               <div>
-                <span className="text-gray-400">Member Since:</span>
+                <span className="text-gray-400">{t('memberSince')}:</span>
                 <p className="text-green-300">
                   {new Date().toLocaleDateString()}
                 </p>
@@ -90,20 +93,20 @@ export default function ProfilePage() {
 
           {/* Subscription Status */}
           <div className="mb-8 p-6 bg-slate-900 rounded-lg border border-green-400/10">
-            <h2 className="text-xl font-bold text-green-300 mb-4">Subscription Status</h2>
+            <h2 className="text-xl font-bold text-green-300 mb-4">{t('subscriptionStatus')}</h2>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 mb-2">Status:</p>
+                <p className="text-gray-400 mb-2">{t('status')}:</p>
                 <p className={`text-lg font-bold ${session.user?.isPaid ? 'text-green-400' : 'text-yellow-400'}`}>
-                  {session.user?.isPaid ? '✓ Premium Active' : 'Free Plan'}
+                  {session.user?.isPaid ? t('premiumActive') : t('freePlan')}
                 </p>
               </div>
               {!session.user?.isPaid && (
                 <Link
-                  href="/pricing"
+                  href={`/${locale}/pricing`}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
                 >
-                  Upgrade Now
+                  {t('upgradeNow')}
                 </Link>
               )}
             </div>
@@ -111,11 +114,11 @@ export default function ProfilePage() {
 
           {/* Edit Details Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            <h2 className="text-xl font-bold text-green-300 mb-4">Edit Details</h2>
+            <h2 className="text-xl font-bold text-green-300 mb-4">{t('editDetails')}</h2>
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Full Name
+                {t('fullName')}
               </label>
               <input
                 type="text"
@@ -123,13 +126,13 @@ export default function ProfilePage() {
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-slate-700 border border-green-400/20 rounded-lg text-white focus:outline-none focus:border-green-400"
-                placeholder="Enter your full name"
+                placeholder={t('fullNamePlaceholder')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Phone Number
+                {t('phoneNumber')}
               </label>
               <input
                 type="tel"
@@ -137,7 +140,7 @@ export default function ProfilePage() {
                 value={formData.phone}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-slate-700 border border-green-400/20 rounded-lg text-white focus:outline-none focus:border-green-400"
-                placeholder="+1 (555) 000-0000"
+                placeholder={t('phonePlaceholder')}
               />
             </div>
 
@@ -158,16 +161,16 @@ export default function ProfilePage() {
               disabled={loading}
               className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? t('saving') : t('saveChanges')}
             </button>
           </form>
 
           <div className="mt-6">
             <Link
-              href="/"
+              href={`/${locale}`}
               className="text-blue-400 hover:underline text-sm"
             >
-              ← Back to Home
+              {t('backToHome')}
             </Link>
           </div>
         </div>

@@ -60,14 +60,14 @@ export default function ChallengesPage() {
             >
               <ArrowLeft className="w-6 h-6" />
             </Link>
-            <h1 className="text-2xl font-mono font-bold neon-glow">Security Challenges</h1>
+            <h1 className="text-2xl font-mono font-bold neon-glow">{t('title')}</h1>
           </div>
           
           <div className="flex items-center space-x-6 font-mono">
             <div className="text-right">
-              <div className="text-green-400">Score: {formatScore(gameState.totalScore)}</div>
+              <div className="text-green-400">{t('score')}: {formatScore(gameState.totalScore)}</div>
               <div className="text-green-300/60 text-sm">
-                {progress.completed}/{progress.total} completed
+                {progress.completed}/{progress.total} {t('completed')}
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function ChallengesPage() {
           
           {/* Challenge List */}
           <div className="lg:col-span-1">
-            <h2 className="text-xl font-mono mb-4 text-green-400">Available Challenges</h2>
+            <h2 className="text-xl font-mono mb-4 text-green-400">{t('availableChallenges')}</h2>
             <div className="space-y-3">
               {challenges.map((challenge) => {
                 const category = CATEGORIES[challenge.category];
@@ -133,15 +133,15 @@ export default function ChallengesPage() {
                         challenge.difficulty === 'medium' ? 'bg-yellow-400/20 text-yellow-300' :
                         'bg-red-400/20 text-red-300'
                       }`}>
-                        {challenge.difficulty.toUpperCase()}
+                        {t(challenge.difficulty.toUpperCase().toLowerCase())}
                       </span>
                       {challenge.isPremium && (
                         <span className="px-2 py-1 rounded font-mono bg-yellow-400/20 text-yellow-300">
-                          PREMIUM
+                          {t('premium')}
                         </span>
                       )}
                       <span className="text-green-400 font-mono">
-                        {challenge.points} pts
+                        {challenge.points} {t('points').toLowerCase()}
                       </span>
                     </div>
                   </button>
@@ -181,11 +181,11 @@ export default function ChallengesPage() {
                     <div className="mt-4 p-4 border border-yellow-400/40 bg-yellow-400/10 rounded">
                       <div className="flex items-center space-x-2 text-yellow-300 font-mono">
                         <Lock className="w-4 h-4" />
-                        <span>Premium challenge. Upgrade to unlock access.</span>
+                        <span>{t('premiumChallenge')}</span>
                       </div>
                       <div className="mt-3">
-                        <Link href="/pricing" className="inline-block px-4 py-2 bg-yellow-500 text-black rounded font-mono text-sm">
-                          Upgrade Now
+                        <Link href={`/${locale}/pricing`} className="inline-block px-4 py-2 bg-yellow-500 text-black rounded font-mono text-sm">
+                          {t('upgradeNow')}
                         </Link>
                       </div>
                     </div>
@@ -197,13 +197,13 @@ export default function ChallengesPage() {
                       selectedChallengeData.difficulty === 'medium' ? 'bg-yellow-400/20 text-yellow-300' :
                       'bg-red-400/20 text-red-300'
                     }`}>
-                      {selectedChallengeData.difficulty.toUpperCase()}
+                      {t(selectedChallengeData.difficulty.toUpperCase().toLowerCase())}
                     </span>
                     <span className="text-green-400 font-mono">
-                      {selectedChallengeData.points} points
+                      {selectedChallengeData.points} {t('points').toLowerCase()}
                     </span>
                     <span className="text-green-300/60">
-                      Category: {CATEGORIES[selectedChallengeData.category].name}
+                      {t('category')}: {CATEGORIES[selectedChallengeData.category].name}
                     </span>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export default function ChallengesPage() {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-mono text-green-400 flex items-center space-x-2">
                       <Lightbulb className="w-5 h-5" />
-                      <span>Hints</span>
+                      <span>{t('hints')}</span>
                     </h3>
                     <button
                       onClick={() => setShowHints(!showHints)}
@@ -221,7 +221,7 @@ export default function ChallengesPage() {
                     >
                       {showHints ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       <span className="font-mono text-sm">
-                        {showHints ? 'Hide' : 'Show'} Hints
+                        {showHints ? t('hideHints') : t('showHints')}
                       </span>
                     </button>
                   </div>
@@ -234,12 +234,12 @@ export default function ChallengesPage() {
                           className="border-l-4 border-yellow-400 bg-yellow-400/5 p-3"
                         >
                           <span className="font-mono text-yellow-300 text-sm">
-                            Hint {index + 1}: {hint}
+                            {t('hint')} {index + 1}: {hint}
                           </span>
                         </div>
                       ))}
                       <div className="text-orange-400 text-sm font-mono mt-2">
-                        ⚠️ Using hints will reduce your final score for this challenge
+                        {t('hintWarning')}
                       </div>
                     </div>
                   )}
@@ -247,14 +247,14 @@ export default function ChallengesPage() {
 
                 {/* Challenge Environment */}
                 <div className="terminal p-6 rounded-lg">
-                  <h3 className="text-lg font-mono text-green-400 mb-4">Challenge Environment</h3>
+                  <h3 className="text-lg font-mono text-green-400 mb-4">{t('challengeEnvironment')}</h3>
                   
                   {/* This will render the actual vulnerable component */}
                   <div className="bg-gray-800 p-4 rounded border">
                     <div className="text-center text-green-300/60">
-                      <p className="font-mono">Loading challenge environment...</p>
+                      <p className="font-mono">{t('loadingEnvironment')}</p>
                       <p className="text-sm mt-2">
-                        Challenge: {selectedChallengeData.exploitTarget}
+                        {t('challenges')}: {selectedChallengeData.exploitTarget}
                       </p>
                     </div>
                   </div>
@@ -270,24 +270,24 @@ export default function ChallengesPage() {
                       }`}
                     >
                       {selectedChallengeData.isPremium && !session?.user?.isPaid
-                        ? 'Upgrade to Launch'
-                        : 'Launch Challenge'}
+                        ? t('upgradeToLaunch')
+                        : t('launchChallenge')}
                     </button>
                     
                     <button className="border border-blue-400 text-blue-400 px-6 py-2 rounded font-mono hover:bg-blue-400/10 transition-colors">
-                      View Source Code
+                      {t('viewSourceCode')}
                     </button>
                   </div>
                 </div>
               </div>
             ) : (
               <div className="terminal p-12 rounded-lg text-center">
-                <h2 className="text-xl font-mono text-green-400 mb-4">Select a Challenge</h2>
+                <h2 className="text-xl font-mono text-green-400 mb-4">{t('selectChallenge')}</h2>
                 <p className="text-green-300/60">
-                  Choose a security challenge from the list to begin your ethical hacking journey.
+                  {t('selectDescription')}
                 </p>
               </div>
-            )}
+            )}}
           </div>
         </div>
       </div>
