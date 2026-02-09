@@ -17,7 +17,7 @@ export function Navigation() {
   const { data: session } = useSession();
 
   const navigation = [
-    { name: t('home'), href: '/home', icon: Home },
+    { name: t('home'), href: '/', icon: Home },
     { name: t('challenges'), href: '/challenges', icon: Target },
     { name: t('leaderboard'), href: '/leaderboard', icon: Trophy },
     { name: t('learn'), href: '/learn', icon: BookOpen },
@@ -234,7 +234,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-green-400/20 bg-black/90 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <Link href={`/${locale}/home`} className="flex items-center space-x-3">
+          <Link href={`/${locale}`} className="flex items-center space-x-3">
             <Shield className="w-8 h-8 text-green-400" />
             <div>
               <div className="text-xl font-mono font-bold neon-glow text-green-400">
