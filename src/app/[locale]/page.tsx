@@ -1,12 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { Shield, Terminal, Zap, Trophy, Lock, Code } from 'lucide-react';
 import { gameStore } from '@/store/gameStore';
 import { GAME_CONFIG } from '@/lib/config';
 import { formatScore, getAchievementBadge } from '@/lib/utils';
 
 export default function Home() {
+  const t = useTranslations('home');
+  const locale = useLocale();
+  const router = useRouter();
   const [gameState, setGameState] = useState(gameStore.getGameState());
   const [isLoading, setIsLoading] = useState(true);
   const progress = gameStore.getProgress();
@@ -23,11 +29,11 @@ export default function Home() {
 
   const startGame = () => {
     // Initialize or continue game
-    window.location.href = '/challenges';
+    router.push(`/${locale}/challenges`);
   };
 
   const resetGame = () => {
-    if (confirm('Are you sure you want to reset your progress? This cannot be undone.')) {
+    if (confirm(t('resetConfirm'))) {
       gameStore.resetGame();
       setGameState(gameStore.getGameState());
     }
@@ -53,9 +59,9 @@ export default function Home() {
             <Shield className="w-8 h-8 text-green-400" />
             <div>
               <h1 className="text-2xl font-mono font-bold neon-glow">
-                {GAME_CONFIG.title}
+                {t('title')}
               </h1>
-              <p className="text-green-300/80 text-sm">{GAME_CONFIG.subtitle}</p>
+              <p className="text-green-300/80 text-sm">{t('subtitle')}</p>
             </div>
           </div>
           
@@ -64,7 +70,7 @@ export default function Home() {
               <div className="text-right">
                 <div className="text-green-400">Score: {formatScore(gameState.totalScore)}</div>
                 <div className="text-green-300/60 text-sm">
-                  {progress.completed}/{progress.total} challenges
+                  {progress.completed}/{progress.total} {t('stats.completed')}
                 </div>
               </div>
               <div className="text-2xl">
@@ -89,13 +95,13 @@ export default function Home() {
               </div>
               
               <div className="text-left font-mono text-green-300 space-y-2 mb-8">
-                <div>Welcome to the Startup Security Showdown!</div>
-                <div>You are a white-hat security researcher.</div>
-                <div>Your mission: Find and exploit vulnerabilities before the bad guys do.</div>
+                <div>{t('terminal.welcome')}</div>
+                <div>{t('terminal.researcher')}</div>
+                <div>{t('terminal.mission')}</div>
                 <div className="text-orange-400">
-                  Warning: This environment contains intentionally vulnerable code.
+                  {t('terminal.warning')}
                 </div>
-                <div>Ready to begin? Type 'start' to initialize the challenge environment...</div>
+                <div>{t('terminal.prompt')}</div>
               </div>
 
               <div className="flex justify-center space-x-4">
@@ -104,7 +110,7 @@ export default function Home() {
                   className="bg-green-400 text-black px-8 py-3 rounded font-mono font-bold hover:bg-green-300 transition-colors flex items-center space-x-2"
                 >
                   <Zap className="w-5 h-5" />
-                  <span>{progress.completed > 0 ? 'Continue Mission' : 'Start Hacking'}</span>
+                  <span>{progress.completed > 0 ? t('continue') : t('startGame')}</span>
                 </button>
                 
                 {progress.completed > 0 && (
@@ -112,7 +118,7 @@ export default function Home() {
                     onClick={resetGame}
                     className="border border-red-400 text-red-400 px-6 py-3 rounded font-mono hover:bg-red-400/10 transition-colors"
                   >
-                    Reset Progress
+                    {t('resetGame')}
                   </button>
                 )}
               </div>
@@ -125,11 +131,11 @@ export default function Home() {
               <div className="terminal p-6 rounded-lg">
                 <div className="flex items-center space-x-3 mb-3">
                   <Trophy className="w-6 h-6 text-yellow-400" />
-                  <h3 className="font-mono text-lg">Progress</h3>
+                  <h3 className="font-mono text-lg">{t('stats.progress')}</h3>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between font-mono">
-                    <span>Completed:</span>
+                    <span>{t('stats.completed')}:</span>
                     <span className="text-green-400">{progress.completed}/{progress.total}</span>
                   </div>
                   <div className="w-full bg-gray-800 rounded-full h-3">
@@ -139,7 +145,7 @@ export default function Home() {
                     ></div>
                   </div>
                   <div className="text-center text-sm text-green-300/60">
-                    {progress.percentage}% Complete
+                    {progress.percentage}% {t('stats.complete')}
                   </div>
                 </div>
               </div>
@@ -147,14 +153,14 @@ export default function Home() {
               <div className="terminal p-6 rounded-lg">
                 <div className="flex items-center space-x-3 mb-3">
                   <Zap className="w-6 h-6 text-orange-400" />
-                  <h3 className="font-mono text-lg">Score</h3>
+                  <h3 className="font-mono text-lg">{t('stats.score')}</h3>
                 </div>
                 <div className="space-y-2">
                   <div className="text-2xl font-mono text-green-400 neon-glow">
                     {formatScore(gameState.totalScore)}
                   </div>
                   <div className="text-sm text-green-300/60">
-                    Total Points Earned
+                    {t('stats.totalPoints')}
                   </div>
                 </div>
               </div>
@@ -162,14 +168,14 @@ export default function Home() {
               <div className="terminal p-6 rounded-lg">
                 <div className="flex items-center space-x-3 mb-3">
                   <Lock className="w-6 h-6 text-purple-400" />
-                  <h3 className="font-mono text-lg">Rank</h3>
+                  <h3 className="font-mono text-lg">{t('stats.level')}</h3>
                 </div>
                 <div className="space-y-2">
                   <div className="text-lg font-mono">
                     {getAchievementBadge(progress.completed, progress.total)}
                   </div>
                   <div className="text-sm text-green-300/60">
-                    Current Status
+                    {t('stats.currentStatus')}
                   </div>
                 </div>
               </div>
@@ -180,55 +186,49 @@ export default function Home() {
           <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="border border-green-400/20 p-6 rounded-lg hover:border-green-400/40 transition-colors">
               <Code className="w-8 h-8 text-green-400 mb-4" />
-              <h3 className="font-mono text-lg mb-2">Real Vulnerabilities</h3>
+              <h3 className="font-mono text-lg mb-2">{t('features.realVulnerabilities')}</h3>
               <p className="text-green-300/70 text-sm">
-                Exploit actual security flaws found in production applications. 
-                Learn from real-world examples in a safe environment.
+                {t('features.realVulnerabilitiesDesc')}
               </p>
             </div>
 
             <div className="border border-green-400/20 p-6 rounded-lg hover:border-green-400/40 transition-colors">
               <Shield className="w-8 h-8 text-blue-400 mb-4" />
-              <h3 className="font-mono text-lg mb-2">Progressive Learning</h3>
+              <h3 className="font-mono text-lg mb-2">{t('features.progressiveLearning')}</h3>
               <p className="text-green-300/70 text-sm">
-                Challenges increase in difficulty. Start with basic XSS and work 
-                your way up to advanced sandbox escapes.
+                {t('features.progressiveLearningDesc')}
               </p>
             </div>
 
             <div className="border border-green-400/20 p-6 rounded-lg hover:border-green-400/40 transition-colors">
               <Terminal className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="font-mono text-lg mb-2">Interactive Environment</h3>
+              <h3 className="font-mono text-lg mb-2">{t('features.interactive')}</h3>
               <p className="text-green-300/70 text-sm">
-                Test your exploits in real-time. Get immediate feedback and 
-                detailed explanations for each vulnerability.
+                {t('features.interactiveDesc')}
               </p>
             </div>
 
             <div className="border border-green-400/20 p-6 rounded-lg hover:border-green-400/40 transition-colors">
               <Trophy className="w-8 h-8 text-yellow-400 mb-4" />
-              <h3 className="font-mono text-lg mb-2">Score & Compete</h3>
+              <h3 className="font-mono text-lg mb-2">{t('features.scoreCompete')}</h3>
               <p className="text-green-300/70 text-sm">
-                Earn points for successful exploits. Compete with other 
-                security researchers on the leaderboard.
+                {t('features.scoreCompeteDesc')}
               </p>
             </div>
 
             <div className="border border-green-400/20 p-6 rounded-lg hover:border-green-400/40 transition-colors">
               <Zap className="w-8 h-8 text-orange-400 mb-4" />
-              <h3 className="font-mono text-lg mb-2">Startup Focused</h3>
+              <h3 className="font-mono text-lg mb-2">{t('features.startupFocused')}</h3>
               <p className="text-green-300/70 text-sm">
-                All scenarios are based on common startup technology stacks 
-                and security patterns you'll encounter in the wild.
+                {t('features.startupFocusedDesc')}
               </p>
             </div>
 
             <div className="border border-green-400/20 p-6 rounded-lg hover:border-green-400/40 transition-colors">
               <Lock className="w-8 h-8 text-red-400 mb-4" />
-              <h3 className="font-mono text-lg mb-2">Safe Learning</h3>
+              <h3 className="font-mono text-lg mb-2">{t('features.safeLearning')}</h3>
               <p className="text-green-300/70 text-sm">
-                Practice ethical hacking in a controlled environment. 
-                No risk to real systems or user data.
+                {t('features.safeLearningDesc')}
               </p>
             </div>
           </section>
@@ -239,10 +239,10 @@ export default function Home() {
       <footer className="border-t border-green-400/20 p-6 text-center">
         <div className="max-w-6xl mx-auto">
           <p className="text-green-300/60 font-mono text-sm mb-2">
-            Built for security education • Practice ethical hacking • Stay curious 🔒
+            {t('footer.tagline')}
           </p>
           <p className="text-green-300/40 font-mono text-xs">
-            © {new Date().getFullYear()} IT-Weor AB, Org.nr: 559397-7332. All rights reserved.
+            {t('footer.copyright', { year: new Date().getFullYear() })}
           </p>
         </div>
       </footer>

@@ -1,0 +1,146 @@
+{
+  "navigation": {
+    "home": "Home",
+    "challenges": "Challenges",
+    "leaderboard": "Leaderboard",
+    "learn": "Learn",
+    "pricing": "Pricing",
+    "admin": "Admin",
+    "profile": "Profile",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "language": "Language"
+  },
+  "home": {
+    "title": "Startup Security Showdown",
+    "subtitle": "Master Frontend Security Through Gamified Challenges",
+    "startGame": "Start Hacking",
+    "continue": "Continue Mission",
+    "resetGame": "Reset Progress",
+    "resetConfirm": "Are you sure you want to reset your progress? This cannot be undone.",
+    "stats": {
+      "title": "Game Statistics",
+      "score": "Score",
+      "progress": "Progress",
+      "achievements": "Achievements",
+      "level": "Rank",
+      "completed": "Completed",
+      "totalPoints": "Total Points Earned",
+      "currentStatus": "Current Status",
+      "complete": "Complete"
+    },
+    "terminal": {
+      "welcome": "Welcome to the Startup Security Showdown!",
+      "researcher": "You are a white-hat security researcher.",
+      "mission": "Your mission: Find and exploit vulnerabilities before the bad guys do.",
+      "warning": "Warning: This environment contains intentionally vulnerable code.",
+      "prompt": "Ready to begin? Type 'start' to initialize the challenge environment..."
+    },
+    "features": {
+      "realVulnerabilities": "Real Vulnerabilities",
+      "realVulnerabilitiesDesc": "Exploit actual security flaws found in production applications. Learn from real-world examples in a safe environment.",
+      "progressiveLearning": "Progressive Learning",
+      "progressiveLearningDesc": "Challenges increase in difficulty. Start with basic XSS and work your way up to advanced sandbox escapes.",
+      "interactive": "Interactive Environment",
+      "interactiveDesc": "Test your exploits in real-time. Get immediate feedback and detailed explanations for each vulnerability.",
+      "scoreCompete": "Score & Compete",
+      "scoreCompeteDesc": "Earn points for successful exploits. Compete with other security researchers on the leaderboard.",
+      "startupFocused": "Startup Focused",
+      "startupFocusedDesc": "All scenarios are based on common startup technology stacks and security patterns you'll encounter in the wild.",
+      "safeLearning": "Safe Learning",
+      "safeLearningDesc": "Practice ethical hacking in a controlled environment. No risk to real systems or user data."
+    },
+    "footer": {
+      "tagline": "Built for security education • Practice ethical hacking • Stay curious 🔒",
+      "copyright": "© {year} IT-Weor AB, Org.nr: 559397-7332. All rights reserved."
+    }
+  },
+  "challenges": {
+    "title": "Challenges",
+    "description": "Solve security challenges to earn points",
+    "difficulty": "Difficulty",
+    "status": "Status",
+    "points": "Points",
+    "authBypassAdmin": "Auth Bypass - Admin",
+    "domXssFeedback": "DOM XSS - Feedback",
+    "iframeSandboxBypass": "iFrame Sandbox Bypass",
+    "jwtManipulation": "JWT Manipulation",
+    "openRedirectLogin": "Open Redirect - Login",
+    "solved": "Solved",
+    "unsolved": "Unsolved",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "rank": "Rank",
+    "player": "Player",
+    "score": "Score",
+    "challenges": "Challenges Solved",
+    "topPlayers": "Top Players"
+  },
+  "learn": {
+    "title": "Learn Security",
+    "description": "Learn the fundamentals of frontend security",
+    "modules": "Modules",
+    "lessons": "Lessons",
+    "resources": "Resources"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "free": "Free",
+    "pro": "Pro",
+    "enterprise": "Enterprise",
+    "getStarted": "Get Started"
+  },
+  "profile": {
+    "title": "My Profile",
+    "username": "Username",
+    "email": "Email",
+    "score": "Total Score",
+    "achievements": "Achievements",
+    "joinedDate": "Joined",
+    "editProfile": "Edit Profile",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "createAccount": "Create new account",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "signInWith": "Sign in with",
+    "signUpWith": "Sign up with",
+    "loginSuccess": "Login successful",
+    "loginError": "Login failed"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "users": "Users",
+    "analytics": "Analytics",
+    "totalUsers": "Total Users",
+    "totalScore": "Total Score",
+    "activeChallenges": "Active Challenges",
+    "userActivity": "User Activity"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close"
+  }
+}

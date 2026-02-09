@@ -1,0 +1,146 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "challenges": "Défis",
+    "leaderboard": "Classement",
+    "learn": "Apprendre",
+    "pricing": "Tarification",
+    "admin": "Admin",
+    "profile": "Profil",
+    "signIn": "Connexion",
+    "signUp": "Inscription",
+    "signOut": "Déconnexion",
+    "language": "Langue"
+  },
+  "home": {
+    "title": "Startup Security Showdown",
+    "subtitle": "Maîtrisez la sécurité front-end grâce à des défis ludiques",
+    "startGame": "Commencer le hacking",
+    "continue": "Continuer la mission",
+    "resetGame": "Réinitialiser la progression",
+    "resetConfirm": "Êtes-vous sûr de vouloir réinitialiser votre progression ? Cela ne peut pas être annulé.",
+    "stats": {
+      "title": "Statistiques du jeu",
+      "score": "Score",
+      "progress": "Progression",
+      "achievements": "Réalisations",
+      "level": "Rang",
+      "completed": "Complété",
+      "totalPoints": "Points totaux gagnés",
+      "currentStatus": "Statut actuel",
+      "complete": "Complété"
+    },
+    "terminal": {
+      "welcome": "Bienvenue au Startup Security Showdown!",
+      "researcher": "Vous êtes un chercheur en sécurité chapeau blanc.",
+      "mission": "Votre mission : Trouver et exploiter les vulnérabilités avant les méchants.",
+      "warning": "Avertissement : Cet environnement contient du code intentionnellement vulnérable.",
+      "prompt": "Prêt à commencer ? Tapez 'start' pour initialiser l'environnement de challenge..."
+    },
+    "features": {
+      "realVulnerabilities": "Vraies vulnérabilités",
+      "realVulnerabilitiesDesc": "Exploitez les failles de sécurité réelles trouvées dans les applications de production. Apprenez à partir d'exemples réels dans un environnement sûr.",
+      "progressiveLearning": "Apprentissage progressif",
+      "progressiveLearningDesc": "Les défis augmentent en difficulté. Commencez par XSS simple et progressez jusqu'au contournement avancé de sandbox.",
+      "interactive": "Environnement interactif",
+      "interactiveDesc": "Testez vos exploits en temps réel. Obtenez des commentaires immédiats et des explications détaillées pour chaque vulnérabilité.",
+      "scoreCompete": "Score et compétition",
+      "scoreCompeteDesc": "Gagnez des points pour les exploits réussis. Concourez avec d'autres chercheurs en sécurité sur le classement.",
+      "startupFocused": "Orienté startup",
+      "startupFocusedDesc": "Tous les scénarios sont basés sur les piles technologiques courantes des startups et les modèles de sécurité que vous rencontrerez.",
+      "safeLearning": "Apprentissage sûr",
+      "safeLearningDesc": "Pratiquez le hacking éthique dans un environnement contrôlé. Aucun risque pour les systèmes réels ou les données utilisateur."
+    },
+    "footer": {
+      "tagline": "Construit pour l'éducation à la sécurité • Pratiquez le hacking éthique • Restez curieux 🔒",
+      "copyright": "© {year} IT-Weor AB, Org.nr: 559397-7332. Tous droits réservés."
+    }
+  },
+  "challenges": {
+    "title": "Défis",
+    "description": "Résolvez des défis de sécurité pour gagner des points",
+    "difficulty": "Difficulté",
+    "status": "Statut",
+    "points": "Points",
+    "authBypassAdmin": "Contournement d'authentification - Admin",
+    "domXssFeedback": "DOM XSS - Retours",
+    "iframeSandboxBypass": "Contournement du sandbox iFrame",
+    "jwtManipulation": "Manipulation JWT",
+    "openRedirectLogin": "Redirection ouverte - Connexion",
+    "solved": "Résolu",
+    "unsolved": "Non résolu",
+    "easy": "Facile",
+    "medium": "Moyen",
+    "hard": "Difficile"
+  },
+  "leaderboard": {
+    "title": "Classement",
+    "rank": "Rang",
+    "player": "Joueur",
+    "score": "Score",
+    "challenges": "Défis résolus",
+    "topPlayers": "Meilleurs joueurs"
+  },
+  "learn": {
+    "title": "Apprendre la sécurité",
+    "description": "Apprenez les principes fondamentaux de la sécurité front-end",
+    "modules": "Modules",
+    "lessons": "Leçons",
+    "resources": "Ressources"
+  },
+  "pricing": {
+    "title": "Tarification",
+    "free": "Gratuit",
+    "pro": "Pro",
+    "enterprise": "Entreprise",
+    "getStarted": "Commencer"
+  },
+  "profile": {
+    "title": "Mon profil",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "score": "Score total",
+    "achievements": "Réalisations",
+    "joinedDate": "Inscrit",
+    "editProfile": "Modifier le profil",
+    "settings": "Paramètres"
+  },
+  "auth": {
+    "signIn": "Connexion",
+    "signUp": "Inscription",
+    "email": "Email",
+    "password": "Mot de passe",
+    "username": "Nom d'utilisateur",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "createAccount": "Créer un nouveau compte",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "noAccount": "Vous n'avez pas encore de compte ?",
+    "signInWith": "Connectez-vous avec",
+    "signUpWith": "Inscrivez-vous avec",
+    "loginSuccess": "Connexion réussie",
+    "loginError": "Échec de la connexion"
+  },
+  "admin": {
+    "title": "Tableau de bord administrateur",
+    "users": "Utilisateurs",
+    "analytics": "Analyses",
+    "totalUsers": "Utilisateurs totaux",
+    "totalScore": "Score total",
+    "activeChallenges": "Défis actifs",
+    "userActivity": "Activité des utilisateurs"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "close": "Fermer"
+  }
+}

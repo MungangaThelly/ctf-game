@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Inter } from "next/font/google";
-import "./globals.css";
+import "./[locale]/globals.css";
 import { Analytics } from '@vercel/analytics/react';
-import { Header } from '@/components/Navigation';
-import AuthProvider from '@/providers/AuthProvider';
+import { ReactNode } from 'react';
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -29,23 +28,18 @@ export const viewport = {
 
 export default function RootLayout({
   children,
+  params: { locale = 'en' },
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
+  params: { locale?: string };
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-gray-900 text-green-400 min-h-screen`}
       >
-        <div className="bg-gradient-to-br from-gray-900 via-black to-gray-800 min-h-screen">
-          <AuthProvider>
-            <Header />
-            <main>
-              {children}
-            </main>
-            <Analytics />
-          </AuthProvider>
-        </div>
+        {children}
+        <Analytics />
       </body>
     </html>
   );

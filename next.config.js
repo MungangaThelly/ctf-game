@@ -1,12 +1,15 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin(
+  './src/i18n.ts'
+);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {
-    root: __dirname
-  },
   typescript: {
     // Skip TypeScript errors if needed
     ignoreBuildErrors: true,
   }
 }
 
-module.exports = nextConfig
+export default withNextIntl(nextConfig)
