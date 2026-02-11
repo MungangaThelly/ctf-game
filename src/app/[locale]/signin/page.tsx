@@ -30,7 +30,12 @@ export default function SignInPage() {
     setLoading(false);
     
     if (res && res.error) {
-      setError(t('error'));
+      // Show specific error message if available, otherwise use generic error
+      if (res.error === 'Your account has been blocked. Please contact support.') {
+        setError(res.error);
+      } else {
+        setError(t('error'));
+      }
     } else if (res?.ok) {
       router.push(`/${locale}/challenges`);
     }
