@@ -30,7 +30,18 @@ interface User {
   name: string | null;
   email: string;
   username: string;
-  phone: users, setUsers] = useState<User[]>([]);
+  phone: string | null;
+  isPaid: boolean;
+  isBlocked: boolean;
+  createdAt: string;
+}
+
+export default function AdminDashboard() {
+  const locale = useLocale();
+  const t = useTranslations('admin');
+  const { data: session, status } = useSession();
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
