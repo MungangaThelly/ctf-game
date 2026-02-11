@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
@@ -14,16 +14,17 @@ export async function PATCH(
   }
 
   try {
+    const { id } = await params;
     const { isBlocked } = await request.json();
     
     // Prevent admin from blocking themselves
-    const user = await prisma.user.findUnique({ where: { id: params.id } });
+    const user = await prisma.user.findUnique({ where: { id } });
     if (user?.email === 'admin@example.com') {
       return Response.json({ error: 'Cannot block admin account' }, { status: 403 });
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: { isBlocked },
       select: {
         id: true,
@@ -46,7 +47,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
@@ -56,14 +57,16 @@ export async function DELETE(
   }
 
   try {
+    const { id } = await params;
+    
     // Prevent admin from deleting themselves
-    const user = await prisma.user.findUnique({ where: { id: params.id } });
+    const user = await prisma.user.findUnique({ where: { id } });
     if (user?.email === 'admin@example.com') {
       return Response.json({ error: 'Cannot delete admin account' }, { status: 403 });
     }
 
     await prisma.user.delete({
-      where: { id: params.id }
+      where: { id }
     });
 
     return Response.json({ success: true, message: 'User deleted successfully' });
