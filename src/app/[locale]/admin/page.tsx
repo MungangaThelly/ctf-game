@@ -141,24 +141,7 @@ export default function AdminDashboard() {
     } catch (err) {
       setError(t('actionFailed'));
       setTimeout(() => setError(''), 3000);
-      console.error(err
-          setError(t('failedToFetch'));
-        }
-        return;
-      }
-      cons
-
-        {successMessage && (
-          <div className="p-4 bg-green-900/50 border border-green-400/30 rounded-lg text-green-300">
-            {successMessage}
-          </div>
-        )}t data = await res.json();
-      setAnalytics(data);
-    } catch (err) {
-      setError(t('errorLoading'));
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -236,6 +219,12 @@ export default function AdminDashboard() {
         {error && (
           <div className="p-4 bg-red-900/50 border border-red-400/30 rounded-lg text-red-300">
             {error}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="p-4 bg-green-900/50 border border-green-400/30 rounded-lg text-green-300">
+            {successMessage}
           </div>
         )}
 
