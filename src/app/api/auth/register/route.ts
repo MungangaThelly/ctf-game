@@ -3,7 +3,8 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
   try {
-    const { email, username, password, confirmPassword, name } = await req.json();
+    const body = await req.json();
+    const { email, username, password, confirmPassword, name, isAdmin } = body;
 
     // Validate input
     if (!email || !username || !password || !confirmPassword) {
@@ -22,8 +23,7 @@ export async function POST(req: Request) {
     }
     
     // Prevent setting admin privileges through registration
-    const requestBody = await req.clone().json();
-    if (requestBody.isAdmin === true) {
+    if (isAdmin === true) {
       return Response.json(
         { error: 'Invalid request' },
         { status: 400 }
