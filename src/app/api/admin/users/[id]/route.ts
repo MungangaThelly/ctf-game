@@ -9,7 +9,16 @@ export async function PATCH(
   const session = await getServerSession(authOptions);
 
   // Check if user is authenticated and is admin
-  if (!session || session.user?.email !== 'admin@example.com') {
+  if (!session?.user?.email) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { isAdmin: true }
+  });
+
+  if (!currentUser?.isAdmin) {
     return new Response('Unauthorized', { status: 401 });
   }
 
@@ -17,10 +26,14 @@ export async function PATCH(
     const { id } = await params;
     const { isBlocked } = await request.json();
     
-    // Prevent admin from blocking themselves
-    const user = await prisma.user.findUnique({ where: { id } });
-    if (user?.email === 'admin@example.com') {
-      return Response.json({ error: 'Cannot block admin account' }, { status: 403 });
+    // Prevent admin from blocking themselves or other admins
+    const user = await prisma.user.findUnique({ 
+      where: { id },
+      select: { email: true, isAdmin: true }
+    });
+    
+    if (user?.isAdmin) {
+      return Response.json({ error: 'Cannot block admin accounts' }, { status: 403 });
     }
 
     const updatedUser = await prisma.user.update({
@@ -34,6 +47,7 @@ export async function PATCH(
         phone: true,
         isPaid: true,
         isBlocked: true,
+        isAdmin: true,
         createdAt: true,
       }
     });
@@ -52,17 +66,30 @@ export async function DELETE(
   const session = await getServerSession(authOptions);
 
   // Check if user is authenticated and is admin
-  if (!session || session.user?.email !== 'admin@example.com') {
+  if (!session?.user?.email) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { isAdmin: true }
+  });
+
+  if (!currentUser?.isAdmin) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   try {
     const { id } = await params;
     
-    // Prevent admin from deleting themselves
-    const user = await prisma.user.findUnique({ where: { id } });
-    if (user?.email === 'admin@example.com') {
-      return Response.json({ error: 'Cannot delete admin account' }, { status: 403 });
+    // Prevent deleting admin accounts
+    const user = await prisma.user.findUnique({ 
+      where: { id },
+      select: { isAdmin: true }
+    });
+    
+    if (user?.isAdmin) {
+      return Response.json({ error: 'Cannot delete admin accounts' }, { status: 403 });
     }
 
     await prisma.user.delete({

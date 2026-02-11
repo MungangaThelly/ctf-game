@@ -16,5 +16,6 @@ model User {
   phone     String?
   isPaid    Boolean @default(false)
   isBlocked Boolean @default(false)
+  isAdmin   Boolean @default(false)
   createdAt DateTime @default(now())
 }

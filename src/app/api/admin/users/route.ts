@@ -6,7 +6,16 @@ export async function GET() {
   const session = await getServerSession(authOptions);
 
   // Check if user is authenticated and is admin
-  if (!session || session.user?.email !== 'admin@example.com') {
+  if (!session?.user?.email) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { isAdmin: true }
+  });
+
+  if (!user?.isAdmin) {
     return new Response('Unauthorized', { status: 401 });
   }
 
@@ -20,10 +29,12 @@ export async function GET() {
         phone: true,
         isPaid: true,
         isBlocked: true,
+        isAdmin: true,
         createdAt: true,
       },
       orderBy: {
         createdAt: 'desc'
+      }
       }
     });
 

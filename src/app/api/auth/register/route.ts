@@ -13,6 +13,23 @@ export async function POST(req: Request) {
       );
     }
 
+    // Prevent registration with admin email
+    if (email.toLowerCase() === 'admin@example.com') {
+      return Response.json(
+        { error: 'This email address is reserved' },
+        { status: 403 }
+      );
+    }
+    
+    // Prevent setting admin privileges through registration
+    const requestBody = await req.clone().json();
+    if (requestBody.isAdmin === true) {
+      return Response.json(
+        { error: 'Invalid request' },
+        { status: 400 }
+      );
+    }
+
     if (password !== confirmPassword) {
       return Response.json(
         { error: 'Passwords do not match' },

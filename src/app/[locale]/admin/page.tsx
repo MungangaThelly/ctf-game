@@ -33,6 +33,7 @@ interface User {
   phone: string | null;
   isPaid: boolean;
   isBlocked: boolean;
+  isAdmin: boolean;
   createdAt: string;
 }
 
@@ -172,7 +173,7 @@ export default function AdminDashboard() {
   }
 
   // Admin access required
-  if (session?.user?.email !== 'admin@example.com') {
+  if (!session?.user?.isAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
         <div className="max-w-md p-8 border border-red-400/30 rounded-lg bg-black/50">
@@ -386,9 +387,9 @@ export default function AdminDashboard() {
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleBlockToggle(user.id, user.isBlocked)}
-                            disabled={user.email === 'admin@example.com'}
+                            disabled={user.isAdmin}
                             className={`p-2 rounded transition-colors ${
-                              user.email === 'admin@example.com'
+                              user.isAdmin
                                 ? 'opacity-30 cursor-not-allowed'
                                 : user.isBlocked
                                 ? 'bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-500/30'
@@ -400,9 +401,9 @@ export default function AdminDashboard() {
                           </button>
                           <button
                             onClick={() => handleDelete(user.id)}
-                            disabled={user.email === 'admin@example.com'}
+                            disabled={user.isAdmin}
                             className={`p-2 rounded transition-colors ${
-                              user.email === 'admin@example.com'
+                              user.isAdmin
                                 ? 'opacity-30 cursor-not-allowed'
                                 : 'bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30'
                             }`}

@@ -24,7 +24,7 @@ export const authOptions = {
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) return null;
 
-        return { id: user.id, name: user.name, email: user.email, username: user.username, isPaid: user.isPaid };
+        return { id: user.id, name: user.name, email: user.email, username: user.username, isPaid: user.isPaid, isAdmin: user.isAdmin };
       }
     })
   ],
@@ -40,6 +40,7 @@ export const authOptions = {
         token.email = user.email;
         token.username = user.username;
         token.isPaid = user.isPaid ?? false;
+        token.isAdmin = user.isAdmin ?? false;
       }
       return token;
     },
@@ -48,16 +49,21 @@ export const authOptions = {
       if (token.email) {
         const user = await prisma.user.findUnique({ 
           where: { email: token.email as string },
-          select: { isBlocked: true }
+          select: { isBlocked: true, isAdmin: true }
         });
         
         if (user?.isBlocked) {
           // Return null to invalidate the session
           throw new Error('Your account has been blocked. Please contact support.');
         }
+        
+        // Update isAdmin in token if it changed
+        if (user) {
+          token.isAdmin = user.isAdmin;
+        }
       }
       
-      session.user = { ...session.user, id: token.id, email: token.email, username: token.username, isPaid: token.isPaid };
+      session.user = { ...session.user, id: token.id, email: token.email, username: token.username, isPaid: token.isPaid, isAdmin: token.isAdmin };
       return session;
     }
   },
