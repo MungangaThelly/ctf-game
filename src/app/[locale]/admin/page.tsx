@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Users, DollarSign, TrendingUp, Lock } from 'lucide-react';
+import { ArrowLeft, Users, DollarSign, TrendingUp, Lock, Shield, Trash2, Ban, CheckCircle } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 
 interface Analytics {
@@ -25,17 +25,20 @@ interface Analytics {
   }>;
 }
 
-export default function AdminDashboard() {
-  const locale = useLocale();
-  const t = useTranslations('admin');
-  const { data: session, status } = useSession();
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  username: string;
+  phone: users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     if (status === 'authenticated') {
       fetchAnalytics();
+      fetchUsers();
     }
   }, [status]);
 
@@ -51,6 +54,94 @@ export default function AdminDashboard() {
         return;
       }
       const data = await res.json();
+      setAnalytics(data);
+    } catch (err) {
+      setError(t('errorLoading'));
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch('/api/admin/users');
+      if (!res.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      const data = await res.json();
+      setUsers(data.users);
+    } catch (err) {
+      console.error('Failed to fetch users:', err);
+    }
+  };
+
+  const handleBlockToggle = async (userId: string, currentlyBlocked: boolean) => {
+    const action = currentlyBlocked ? 'unblock' : 'block';
+    const confirmMessage = currentlyBlocked ? t('confirmUnblock') : t('confirmBlock');
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isBlocked: !currentlyBlocked })
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to update user');
+      }
+
+      setSuccessMessage(currentlyBlocked ? t('userUnblocked') : t('userBlocked'));
+      setTimeout(() => setSuccessMessage(''), 3000);
+      
+      // Refresh users list
+      await fetchUsers();
+    } catch (err) {
+      setError(t('actionFailed'));
+      setTimeout(() => setError(''), 3000);
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (userId: string) => {
+    if (!confirm(t('confirmDelete'))) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE'
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to delete user');
+      }
+
+      setSuccessMessage(t('userDeleted'));
+      setTimeout(() => setSuccessMessage(''), 3000);
+      
+      // Refresh both users list and analytics
+      await fetchUsers();
+      await fetchAnalytics();
+    } catch (err) {
+      setError(t('actionFailed'));
+      setTimeout(() => setError(''), 3000);
+      console.error(err
+          setError(t('failedToFetch'));
+        }
+        return;
+      }
+      cons
+
+        {successMessage && (
+          <div className="p-4 bg-green-900/50 border border-green-400/30 rounded-lg text-green-300">
+            {successMessage}
+          </div>
+        )}t data = await res.json();
       setAnalytics(data);
     } catch (err) {
       setError(t('errorLoading'));
@@ -163,6 +254,95 @@ export default function AdminDashboard() {
                 icon={<DollarSign className="w-6 h-6" />}
               />
               <StatCard
+
+        {/* User Management Section */}
+        <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
+          <div className="flex items-center space-x-3 mb-6">
+            <Shield className="w-6 h-6 text-green-400" />
+            <h2 className="text-xl font-mono font-bold text-green-400">{t('userManagement')}</h2>
+          </div>
+          
+          {users.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm font-mono">
+                <thead>
+                  <tr className="border-b border-green-400/20">
+                    <th className="text-left py-3 px-4 text-green-400">{t('email')}</th>
+                    <th className="text-left py-3 px-4 text-green-400">{t('name')}</th>
+                    <th className="text-left py-3 px-4 text-green-400">{t('username')}</th>
+                    <th className="text-left py-3 px-4 text-green-400">{t('phone')}</th>
+                    <th className="text-left py-3 px-4 text-green-400">{t('status')}</th>
+                    <th className="text-left py-3 px-4 text-green-400">{t('date')}</th>
+                    <th className="text-center py-3 px-4 text-green-400">{t('actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id} className="border-b border-green-400/10 hover:bg-green-400/5">
+                      <td className="py-3 px-4 text-green-300">{user.email}</td>
+                      <td className="py-3 px-4 text-gray-400">{user.name || '-'}</td>
+                      <td className="py-3 px-4 text-gray-400">{user.username}</td>
+                      <td className="py-3 px-4 text-gray-400">{user.phone || '-'}</td>
+                      <td className="py-3 px-4">
+                        <div className="flex flex-col gap-1">
+                          <span className={`inline-block px-2 py-1 rounded text-xs ${
+                            user.isPaid 
+                              ? 'bg-green-500/20 text-green-300 border border-green-400/30' 
+                              : 'bg-gray-500/20 text-gray-300 border border-gray-400/30'
+                          }`}>
+                            {user.isPaid ? t('paid') : t('free')}
+                          </span>
+                          {user.isBlocked && (
+                            <span className="inline-block px-2 py-1 rounded text-xs bg-red-500/20 text-red-300 border border-red-400/30">
+                              {t('blocked')}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-gray-400">
+                        {new Date(user.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleBlockToggle(user.id, user.isBlocked)}
+                            disabled={user.email === 'admin@example.com'}
+                            className={`p-2 rounded transition-colors ${
+                              user.email === 'admin@example.com'
+                                ? 'opacity-30 cursor-not-allowed'
+                                : user.isBlocked
+                                ? 'bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-500/30'
+                                : 'bg-yellow-500/20 border border-yellow-400/30 text-yellow-400 hover:bg-yellow-500/30'
+                            }`}
+                            title={user.isBlocked ? t('unblock') : t('block')}
+                          >
+                            {user.isBlocked ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(user.id)}
+                            disabled={user.email === 'admin@example.com'}
+                            className={`p-2 rounded transition-colors ${
+                              user.email === 'admin@example.com'
+                                ? 'opacity-30 cursor-not-allowed'
+                                : 'bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30'
+                            }`}
+                            title={t('delete')}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-400">
+              {t('noUsers')}
+            </div>
+          )}
+        </div>
                 title={t('newUsers30')}
                 value={analytics.summary.newUsersLast30Days}
                 icon={<TrendingUp className="w-6 h-6" />}
