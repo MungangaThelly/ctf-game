@@ -1,7 +1,7 @@
 # 🎯 Startup Security Showdown - Project Presentation
 *An Interactive CTF Game for Frontend Security Training*
 
-**🌐 Live Demo:** https://ctf-game-trainer.vercel.app/
+**🌐 Live Demo:** https://securityshowdown.tech/
 **📱 Try it now:** Works on any device - scan QR code or visit URL directly  
 **⚡ Global Access:** Fast loading worldwide via Vercel's edge network
 
@@ -24,7 +24,7 @@
 ---
 
 ## ⚡ **Live Production Demo** 
-**🌐 https://ctf-game-trainer.vercel.app/**
+**🌐 https://securityshowdown.tech/**
 
 ### **🎮 Interactive Demo Flow (3-4 minutes):**
 
@@ -370,7 +370,7 @@ Market: Expansion beyond pilot customers to broader market
 **🎯 Ready for questions, pilot discussions, and partnership exploration!**
 
 **📧 Contact:** it.weor@gmail.com  
-**🌐 Live Demo:** https://ctf-game-trainer.vercel.app/  
+**🌐 Live Demo:** https://securityshowdown.tech/  
 **📊 Analytics Dashboard:** Available for serious partnership discussions
 
 ---
@@ -378,4 +378,4 @@ Market: Expansion beyond pilot customers to broader market
 **Built with ❤️, deep security expertise, and proven business execution by Munganga Thelly**  
 *© 2025 Munganga Thelly. All rights reserved. Commercial partnerships welcome.*
 
-**Last Updated:** October 2025 | **Version:** 1.0.0 | **Status:** Production Ready & Investor Ready ✅
+**Last Updated:** February 2026 | **Version:** 1.0.0 | **Status:** Production Ready & Investor Ready ✅
