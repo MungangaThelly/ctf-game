@@ -254,6 +254,86 @@ export default function AdminDashboard() {
                 icon={<DollarSign className="w-6 h-6" />}
               />
               <StatCard
+                title={t('newUsers30')}
+                value={analytics.summary.newUsersLast30Days}
+                icon={<TrendingUp className="w-6 h-6" />}
+              />
+            </div>
+
+            {/* User Growth Chart */}
+            <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
+              <h2 className="text-xl font-mono font-bold text-green-400 mb-6">{t('userGrowth')}</h2>
+              <div className="flex items-end space-x-2 h-48">
+                {analytics.usersByWeek.map((item, idx) => (
+                  <div key={idx} className="flex-1 flex flex-col items-center">
+                    <div className="w-full bg-green-500/20 border border-green-400/30 rounded-t flex items-end justify-center relative"
+                      style={{ height: `${Math.max((item.users / Math.max(...analytics.usersByWeek.map(w => w.users)) * 100) || 20, 20)}px` }}>
+                      <span className="text-xs text-green-300 font-mono absolute -top-6">{item.users}</span>
+                    </div>
+                    <span className="text-xs text-gray-400 font-mono mt-2">{item.week}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Paid Signups */}
+            <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
+              <h2 className="text-xl font-mono font-bold text-green-400 mb-6">{t('recentPaidSignups')}</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm font-mono">
+                  <thead>
+                    <tr className="border-b border-green-400/20">
+                      <th className="text-left py-3 px-4 text-green-400">{t('email')}</th>
+                      <th className="text-left py-3 px-4 text-green-400">{t('name')}</th>
+                      <th className="text-left py-3 px-4 text-green-400">{t('date')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {analytics.recentPaidSignups.length > 0 ? (
+                      analytics.recentPaidSignups.map((user) => (
+                        <tr key={user.id} className="border-b border-green-400/10 hover:bg-green-400/5">
+                          <td className="py-3 px-4 text-green-300">{user.email}</td>
+                          <td className="py-3 px-4 text-gray-400">{user.name || '-'}</td>
+                          <td className="py-3 px-4 text-gray-400">
+                            {new Date(user.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="py-6 text-center text-gray-400">
+                          {t('noPaidSignups')}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Summary Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
+                <p className="text-gray-400 text-sm mb-2">{t('freeUsers')}</p>
+                <p className="text-3xl font-mono font-bold text-green-300">
+                  {analytics.summary.freeUsers}
+                </p>
+              </div>
+              <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
+                <p className="text-gray-400 text-sm mb-2">{t('totalRevenue')}</p>
+                <p className="text-3xl font-mono font-bold text-green-300">
+                  ${analytics.summary.totalRevenue}
+                </p>
+              </div>
+              <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
+                <p className="text-gray-400 text-sm mb-2">{t('conversionRate')}</p>
+                <p className="text-3xl font-mono font-bold text-green-300">
+                  {analytics.summary.conversionRate}%
+                </p>
+              </div>
+            </div>
+          </>
+        ) : null}
 
         {/* User Management Section */}
         <div className="bg-slate-800 border border-green-400/20 rounded-lg p-6">
