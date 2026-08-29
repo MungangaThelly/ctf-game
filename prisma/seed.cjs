@@ -4,34 +4,34 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminPassword = await bcrypt.hash('secret', 10);
-  const guestPassword = await bcrypt.hash('password', 10);
+  const adminEmail = process.env.SEED_ADMIN_EMAIL;
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  const adminUsername = process.env.SEED_ADMIN_USERNAME || 'admin';
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error('SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required');
+  }
+
+  if (adminPassword.length < 12) {
+    throw new Error('SEED_ADMIN_PASSWORD must contain at least 12 characters');
+  }
+
+  const passwordHash = await bcrypt.hash(adminPassword, 12);
 
   await prisma.user.upsert({
-    where: { email: 'admin@example.com' },
-    update: {},
+    where: { email: adminEmail.toLowerCase() },
+    update: { isAdmin: true },
     create: {
-      name: 'Admin User',
-      email: 'admin@example.com',
-      username: 'admin',
-      password: adminPassword,
+      name: 'Administrator',
+      email: adminEmail.toLowerCase(),
+      username: adminUsername,
+      password: passwordHash,
       isPaid: true,
+      isAdmin: true,
     },
   });
 
-  await prisma.user.upsert({
-    where: { email: 'guest@example.com' },
-    update: {},
-    create: {
-      name: 'Guest User',
-      email: 'guest@example.com',
-      username: 'guest',
-      password: guestPassword,
-      isPaid: false,
-    },
-  });
-
-  console.log('Seeded users');
+  console.log('Administrator seeded');
 }
 
 main()

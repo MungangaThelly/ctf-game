@@ -1,7 +1,7 @@
 # 🏆 Startup Security Showdown
 *An Interactive CTF (Capture The Flag) Game for Frontend Security Training*
 
-![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black)
+![Next.js](https://img.shields.io/badge/Next.js-16.3.3-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC)
 ![Security](https://img.shields.io/badge/Security-CTF-red)
@@ -64,7 +64,7 @@
 ## 🛠️ **Technical Stack**
 
 ### **Frontend Framework:**
-- **Next.js 16.1.6** - React framework with App Router
+- **Next.js 16.3.3** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling with custom hacker theme
 - **Framer Motion** - Smooth animations and transitions
@@ -88,8 +88,9 @@
 ## 🚀 **Local Development**
 
 ### **Prerequisites:**
-- Node.js 18+ 
+- Node.js 20.9+
 - npm or yarn
+- PostgreSQL database (the hosted deployment uses Neon)
 
 ### **Installation:**
 ```bash
@@ -99,6 +100,12 @@ cd ctf-game
 
 # Install dependencies
 npm install
+
+# Configure DATABASE_URL, NEXTAUTH_URL, NEXTAUTH_SECRET, and Stripe variables
+# in .env.local (never commit this file)
+
+# Create or update the local database schema
+npx prisma db push
 
 # Start development server
 npm run dev
@@ -174,10 +181,10 @@ npm run lint -- --fix
 - ✅ Scoring system with hints and achievements
 - ✅ Responsive design and professional UI
 - ✅ **Live production deployment**
-- ✅ **Stripe payments integration** - Premium subscriptions live
+- ✅ **Stripe checkout integration** - One-time premium access payment
 
 ### **Phase 2: Platform** (Next 3 months)
-- ✅ **Payment Processing** - Stripe checkout and subscription management
+- ✅ **Payment Processing** - Stripe Checkout and signed webhook handling
 - 🔄 **User Authentication** - GitHub/Google OAuth integration
 - 💾 **Database Integration** - Persistent progress tracking across devices
 - 👥 **Team Features** - Corporate dashboards and manager analytics  
@@ -321,7 +328,7 @@ npm run lint -- --fix
 
 ### **Technical Excellence:**
 - **Production-grade deployment** on global CDN infrastructure
-- **Modern tech stack** with TypeScript, Next.js 15, and optimized performance
+- **Modern tech stack** with TypeScript, Next.js 16, and optimized performance
 - **Responsive design** working flawlessly across all device types
 - **Security expertise** demonstrated through real vulnerability implementation
 
@@ -334,8 +341,9 @@ npm run lint -- --fix
 ## 🔐 **Security & Privacy**
 
 ### **Data Protection:**
-- **No personal data collection** - LocalStorage only for game progress
-- **GDPR compliant** - No tracking without consent
+- **Account data** - Email, username, optional name/phone, and access flags are stored in PostgreSQL
+- **Game progress** - Stored locally in the browser
+- **Analytics** - Vercel Analytics is enabled; review consent and privacy requirements for your jurisdiction
 - **Secure hosting** - Vercel's enterprise-grade infrastructure
 - **Safe learning environment** - No real security risks to users
 
@@ -354,14 +362,14 @@ npm run lint -- --fix
 - **Consulting Services** - Security training implementation for organizations
 
 ### **Technical Details:**
-- **GitHub Repository** - [Link to be added]
+- **GitHub Repository** - https://github.com/MungangaThelly/ctf-game
 - **Live Demo** - https://securityshowdown.tech/
 - **Documentation** - Comprehensive guides and API references available
 - **Support** - Community support and enterprise support options
 
 ## 📄 **License & Copyright**
 
-**© 2025 Munganga Thelly. All rights reserved.**
+**© 2026 Munganga Thelly. All rights reserved.**
 
 This project is licensed under the MIT License for educational and demonstration purposes.
 
@@ -387,4 +395,4 @@ This project builds upon excellent open-source technologies:
 
 ---
 
-**Last Updated:** February 2026 | **Version:** 1.0.0 | **Status:** Production Ready ✅ | **Payments:** Stripe Live 💳
+**Last Updated:** August 2026 | **Version:** 0.1.0 | **Status:** Deployed on Vercel ✅ | **Payments:** Stripe Checkout integrated
