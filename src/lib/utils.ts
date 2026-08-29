@@ -56,7 +56,7 @@ export function containsXSS(input: string): boolean {
 }
 
 // Simulate JWT token creation (for educational purposes)
-export function createMockJWT(payload: Record<string, any>, secret: string = 'weak-secret'): string {
+export function createMockJWT(payload: Record<string, unknown>, secret: string = 'weak-secret'): string {
   const header = {
     alg: 'HS256',
     typ: 'JWT'
@@ -73,12 +73,16 @@ export function createMockJWT(payload: Record<string, any>, secret: string = 'we
 }
 
 // Decode JWT (for educational purposes)
-export function decodeMockJWT(token: string): { header: any; payload: any; signature: string } | null {
+export function decodeMockJWT(token: string): {
+  header: Record<string, unknown>;
+  payload: Record<string, unknown>;
+  signature: string;
+} | null {
   try {
     const [encodedHeader, encodedPayload, signature] = token.split('.');
     
-    const header = JSON.parse(atob(encodedHeader));
-    const payload = JSON.parse(atob(encodedPayload));
+    const header = JSON.parse(atob(encodedHeader)) as Record<string, unknown>;
+    const payload = JSON.parse(atob(encodedPayload)) as Record<string, unknown>;
 
     return { header, payload, signature };
   } catch {

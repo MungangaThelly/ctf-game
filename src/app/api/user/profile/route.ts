@@ -23,6 +23,16 @@ export async function PUT(req: Request) {
         name: name.trim(),
         phone: phone?.trim() || null,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        username: true,
+        phone: true,
+        isPaid: true,
+        isAdmin: true,
+        createdAt: true,
+      },
     });
 
     return Response.json({ user }, { status: 200 });

@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import { gameStore } from '@/store/gameStore';
 import { createMockJWT, decodeMockJWT } from '@/lib/utils';
-import jwtDecode from 'jwt-decode';
 import { useLocale, useTranslations } from 'next-intl';
 export default function JWTManipulationChallenge() {
   const { data: session, status } = useSession();
@@ -17,7 +16,7 @@ export default function JWTManipulationChallenge() {
   const [currentUser, setCurrentUser] = useState('guest');
   const [jwtToken, setJwtToken] = useState('');
   const [editedToken, setEditedToken] = useState('');
-  const [decodedToken, setDecodedToken] = useState<any>(null);
+  const [decodedToken, setDecodedToken] = useState<ReturnType<typeof decodeMockJWT>>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [exploitDetected, setExploitDetected] = useState(false);
   const [challengeCompleted, setChallengeCompleted] = useState(false);

@@ -28,13 +28,11 @@ export const viewport = {
 
 export default function RootLayout({
   children,
-  params: { locale = 'en' },
 }: Readonly<{
   children: ReactNode;
-  params: { locale?: string };
 }>) {
   return (
-    <html lang={locale} className="dark">
+    <html lang="en" className="dark">
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-gray-900 text-green-400 min-h-screen`}
       >

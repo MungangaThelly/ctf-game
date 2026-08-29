@@ -2,14 +2,12 @@ import { getServerSession } from 'next-auth';
 import { stripe } from '@/lib/stripe';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return Response.json({ error: 'Not authenticated' }, { status: 401 });
     }
-
-    const { userId } = await req.json();
 
     // Create Stripe checkout session
     const checkoutSession = await stripe.checkout.sessions.create({
@@ -31,7 +29,7 @@ export async function POST(req: Request) {
       success_url: `${process.env.NEXTAUTH_URL}/challenges?success=true`,
       cancel_url: `${process.env.NEXTAUTH_URL}/pricing?canceled=true`,
       metadata: {
-        userId: String(userId),
+        userId: String(session.user.id),
         userEmail: session.user.email,
       },
     });

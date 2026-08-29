@@ -5,11 +5,6 @@ const withNextIntl = createNextIntlPlugin(
 );
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  typescript: {
-    // Skip TypeScript errors if needed
-    ignoreBuildErrors: true,
-  }
-}
+const nextConfig = {}
 
 export default withNextIntl(nextConfig)

@@ -2,8 +2,15 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import type { NextAuthOptions } from 'next-auth';
 
-export const authOptions = {
+const authSecret = process.env.NEXTAUTH_SECRET;
+
+if (process.env.NODE_ENV === 'production' && !authSecret) {
+  throw new Error('NEXTAUTH_SECRET must be set in production');
+}
+
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -47,9 +54,9 @@ export const authOptions = {
     async session({ session, token }) {
       // Check if user is blocked on every session check
       if (token.email) {
-        const user = await prisma.user.findUnique({ 
+        const user = await prisma.user.findUnique({
           where: { email: token.email as string },
-          select: { isBlocked: true, isAdmin: true }
+          select: { isBlocked: true, isAdmin: true, isPaid: true, phone: true }
         });
         
         if (user?.isBlocked) {
@@ -60,15 +67,25 @@ export const authOptions = {
         // Update isAdmin in token if it changed
         if (user) {
           token.isAdmin = user.isAdmin;
+          token.isPaid = user.isPaid;
+          token.phone = user.phone;
         }
       }
       
-      session.user = { ...session.user, id: token.id, email: token.email, username: token.username, isPaid: token.isPaid, isAdmin: token.isAdmin };
+      session.user = {
+        ...session.user,
+        id: token.id ?? '',
+        email: token.email,
+        username: token.username,
+        phone: token.phone,
+        isPaid: token.isPaid ?? false,
+        isAdmin: token.isAdmin ?? false,
+      };
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || 'dev-secret'
+  secret: authSecret
 };
 
-const handler = NextAuth(authOptions as any);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
