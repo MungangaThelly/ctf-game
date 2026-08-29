@@ -39,7 +39,7 @@
     "username": "Nom d'utilisateur",
     "usernamePlaceholder": "hackersecurite",
     "password": "Mot de passe",
-    "passwordPlaceholder": "Au moins 6 caractères",
+    "passwordPlaceholder": "Au moins 12 caractères",
     "confirmPassword": "Confirmer le mot de passe",
     "confirmPasswordPlaceholder": "Ressaisissez le mot de passe",
     "creatingAccount": "Création du compte...",

@@ -39,7 +39,7 @@
     "username": "Username",
     "usernamePlaceholder": "securityhacker",
     "password": "Password",
-    "passwordPlaceholder": "At least 6 characters",
+    "passwordPlaceholder": "At least 12 characters",
     "confirmPassword": "Confirm Password",
     "confirmPasswordPlaceholder": "Re-enter password",
     "creatingAccount": "Creating Account...",

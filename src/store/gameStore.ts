@@ -113,6 +113,12 @@ class GameStore {
       hints: { ...state.hints, [challengeId]: hintsUsed },
     });
 
+    void fetch('/api/user/progress', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ challengeId, completed: true, exploited: true, hintsUsed }),
+    }).catch(() => undefined);
+
     return points;
   }
 
@@ -138,6 +144,12 @@ class GameStore {
 
     attempts.push(newAttempt);
     localStorage.setItem(this.STORAGE_KEYS.EXPLOITS, JSON.stringify(attempts.slice(-100))); // Keep last 100 attempts
+
+    void fetch('/api/user/progress', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ challengeId, exploited }),
+    }).catch(() => undefined);
   }
 
   // Get exploit attempts

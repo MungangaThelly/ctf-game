@@ -1,8 +1,20 @@
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { checkRateLimit, requestIp } from '@/lib/rate-limit';
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_PATTERN = /^[a-zA-Z0-9_-]{3,32}$/;
 
 export async function POST(req: Request) {
   try {
+    const rateLimit = checkRateLimit(`register:${requestIp(req)}`, 5, 15 * 60 * 1000);
+    if (!rateLimit.allowed) {
+      return Response.json(
+        { error: 'Too many registration attempts. Try again later.' },
+        { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const { email, username, password, confirmPassword, name, isAdmin } = body;
 
@@ -14,11 +26,17 @@ export async function POST(req: Request) {
       );
     }
 
-    // Prevent registration with admin email
-    if (email.toLowerCase() === 'admin@example.com') {
+    if (typeof email !== 'string' || !EMAIL_PATTERN.test(email) || email.length > 254) {
       return Response.json(
-        { error: 'This email address is reserved' },
-        { status: 403 }
+        { error: 'Enter a valid email address' },
+        { status: 400 }
+      );
+    }
+
+    if (typeof username !== 'string' || !USERNAME_PATTERN.test(username)) {
+      return Response.json(
+        { error: 'Username must be 3-32 characters using letters, numbers, _ or -' },
+        { status: 400 }
       );
     }
     
@@ -37,16 +55,16 @@ export async function POST(req: Request) {
       );
     }
 
-    if (password.length < 6) {
+    if (typeof password !== 'string' || password.length < 12 || password.length > 128) {
       return Response.json(
-        { error: 'Password must be at least 6 characters' },
+        { error: 'Password must be between 12 and 128 characters' },
         { status: 400 }
       );
     }
 
     // Check if user already exists
     const existingEmail = await prisma.user.findUnique({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
     if (existingEmail) {
       return Response.json(
@@ -71,8 +89,8 @@ export async function POST(req: Request) {
     // Create user
     const user = await prisma.user.create({
       data: {
-        email,
-        username,
+        email: email.toLowerCase(),
+        username: username.trim(),
         password: hashedPassword,
         name: name || username,
       },

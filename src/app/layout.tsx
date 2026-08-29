@@ -15,10 +15,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://securityshowdown.tech'),
   title: "Startup Security Showdown - CTF Game",
   description: "Learn frontend security through gamified challenges. Test your skills against real-world vulnerabilities in a safe environment.",
   keywords: ["cybersecurity", "CTF", "hacking", "frontend security", "web security", "XSS", "JWT", "OWASP"],
   authors: [{ name: "Munganga Thelly" }],
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'Startup Security Showdown',
+    description: 'Practice web security through controlled, gamified challenges.',
+    url: 'https://securityshowdown.tech',
+    siteName: 'Startup Security Showdown',
+    type: 'website',
+  },
 };
 
 export const viewport = {
