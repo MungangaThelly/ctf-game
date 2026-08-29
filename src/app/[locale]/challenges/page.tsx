@@ -27,6 +27,24 @@ export default function ChallengesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    const state = gameStore.getGameState();
+    const challengeIds = new Set([...state.completedChallenges, ...state.exploitedChallenges]);
+    for (const challengeId of challengeIds) {
+      void fetch('/api/user/progress', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          challengeId,
+          completed: state.completedChallenges.includes(challengeId),
+          exploited: state.exploitedChallenges.includes(challengeId),
+          hintsUsed: state.hints[challengeId] ?? 0,
+        }),
+      });
+    }
+  }, [status]);
+
   const handleLaunch = (challengeId: string, isPremium?: boolean) => {
     if (status !== 'authenticated') {
       // Redirect to sign-in (NextAuth) or prompt
