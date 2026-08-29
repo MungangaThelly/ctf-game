@@ -82,7 +82,13 @@ NEXTAUTH_SECRET=<generate-random-secret>
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=<will-set-after-webhook-setup>
+
+# Transactional email (enables verification and password recovery)
+RESEND_API_KEY=re_...
+EMAIL_FROM=Security Showdown <accounts@your-verified-domain.example>
 ```
+
+Email verification is enforced automatically only when both email variables are configured. Verify the sending domain with the provider before enabling them in Production.
 
 **Generate NEXTAUTH_SECRET:**
 ```bash

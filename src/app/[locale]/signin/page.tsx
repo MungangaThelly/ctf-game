@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 
@@ -32,6 +32,8 @@ export default function SignInPage() {
     if (res && res.error) {
       // Show specific error message if available, otherwise use generic error
       if (res.error === 'Your account has been blocked. Please contact support.') {
+        setError(res.error);
+      } else if (res.error === 'Please verify your email before signing in.') {
         setError(res.error);
       } else {
         setError(t('error'));
@@ -122,6 +124,9 @@ export default function SignInPage() {
           </form>
 
           <div className="mt-6 text-center">
+            <Link href={`/${locale}/forgot-password`} className="mb-3 block text-sm text-green-400 hover:underline">
+              Forgot your password?
+            </Link>
             <p className="text-gray-400 text-sm">
               {t('noAccount')}{' '}
               <Link href={`/${locale}/signup`} className="text-green-400 hover:underline font-semibold">

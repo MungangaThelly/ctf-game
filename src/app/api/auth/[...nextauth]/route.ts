@@ -28,6 +28,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Your account has been blocked. Please contact support.');
         }
 
+        if (process.env.RESEND_API_KEY && process.env.EMAIL_FROM && !user.emailVerified) {
+          throw new Error('Please verify your email before signing in.');
+        }
+
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) return null;
 

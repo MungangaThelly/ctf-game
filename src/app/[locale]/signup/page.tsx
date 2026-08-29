@@ -46,10 +46,12 @@ export default function SignUpPage() {
         return;
       }
 
-      setSuccess(t('success'));
-      setTimeout(() => {
-        router.push(`/${locale}/signin`);
-      }, 2000);
+      setSuccess(data.message || t('success'));
+      if (!data.verificationSent) {
+        setTimeout(() => {
+          router.push(`/${locale}/signin`);
+        }, 2000);
+      }
     } catch (error) {
       setError('Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
@@ -115,6 +117,8 @@ export default function SignUpPage() {
               </label>
               <input
                 type="password"
+                minLength={12}
+                maxLength={128}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -130,6 +134,8 @@ export default function SignUpPage() {
               </label>
               <input
                 type="password"
+                minLength={12}
+                maxLength={128}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}

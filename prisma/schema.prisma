@@ -17,9 +17,23 @@ model User {
   isPaid    Boolean @default(false)
   isBlocked Boolean @default(false)
   isAdmin   Boolean @default(false)
+  emailVerified DateTime?
   createdAt DateTime @default(now())
   progress  ChallengeProgress[]
   payments  Payment[]
+  emailTokens EmailToken[]
+}
+
+model EmailToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  purpose   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
 }
 
 model ChallengeProgress {

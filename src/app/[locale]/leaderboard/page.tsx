@@ -5,7 +5,7 @@ import { ArrowLeft, Trophy, Medal, Crown, Zap, Clock, Target } from 'lucide-reac
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { gameStore } from '@/store/gameStore';
-import { formatScore, formatTime, getAchievementBadge } from '@/lib/utils';
+import { formatScore, getAchievementBadge } from '@/lib/utils';
 import { Terminal, ProgressBar, MatrixBackground } from '@/components/ui/hacker-ui';
 
 interface LeaderboardEntry {
@@ -19,89 +19,34 @@ interface LeaderboardEntry {
   rank: number;
 }
 
-// Mock leaderboard data (in real app, this would come from a database)
-const mockLeaderboardData: LeaderboardEntry[] = [
-  {
-    id: '1',
-    username: 'CyberNinja',
-    score: 2850,
-    completedChallenges: 5,
-    totalChallenges: 5,
-    timeToComplete: 1200000, // 20 minutes
-    badge: '🏆 Master Hacker',
-    rank: 1
-  },
-  {
-    id: '2',
-    username: 'SecurityPro',
-    score: 2640,
-    completedChallenges: 5,
-    totalChallenges: 5,
-    timeToComplete: 1800000, // 30 minutes
-    badge: '🥇 Elite Hacker',
-    rank: 2
-  },
-  {
-    id: '3',
-    username: 'WhiteHatDev',
-    score: 2100,
-    completedChallenges: 4,
-    totalChallenges: 5,
-    timeToComplete: 2400000, // 40 minutes
-    badge: '🥈 Advanced Hacker',
-    rank: 3
-  },
-  {
-    id: '4',
-    username: 'PenTestRookie',
-    score: 1850,
-    completedChallenges: 4,
-    totalChallenges: 5,
-    timeToComplete: 3000000, // 50 minutes
-    badge: '🥉 Intermediate Hacker',
-    rank: 4
-  },
-  {
-    id: '5',
-    username: 'EthicalHacker',
-    score: 1650,
-    completedChallenges: 3,
-    totalChallenges: 5,
-    timeToComplete: 2700000, // 45 minutes
-    badge: '🎯 Novice Hacker',
-    rank: 5
-  }
-];
-
 export default function LeaderboardPage() {
   const locale = useLocale();
   const t = useTranslations('leaderboard');
-  const [gameState, setGameState] = useState(gameStore.getGameState());
   const [userStats, setUserStats] = useState({
     score: 0,
     completed: 0,
     total: 5,
     rank: 0
   });
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(mockLeaderboardData);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [globalStats, setGlobalStats] = useState({ totalPlayers: 0, exploitsFound: 0 });
 
   useEffect(() => {
     const state = gameStore.getGameState();
     const progress = gameStore.getProgress();
     
-    setGameState(state);
     setUserStats({
       score: state.totalScore,
       completed: progress.completed,
       total: progress.total,
-      rank: calculateUserRank(state.totalScore)
+      rank: 0
+    });
+    void fetch('/api/leaderboard').then((response) => response.json()).then((data) => {
+      setLeaderboardData(data.leaderboard || []);
+      setGlobalStats(data.stats || { totalPlayers: 0, exploitsFound: 0 });
+      if (data.currentUser) setUserStats({ score: data.currentUser.score, completed: data.currentUser.completedChallenges, total: data.currentUser.totalChallenges, rank: data.currentUser.rank });
     });
   }, []);
-
-  const calculateUserRank = (score: number): number => {
-    const higherScores = mockLeaderboardData.filter(entry => entry.score > score);
-    return higherScores.length + 1;
-  };
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -216,7 +161,7 @@ export default function LeaderboardPage() {
                     <Target className="w-4 h-4 text-blue-400" />
                     <span className="text-green-300">{t('totalPlayers')}</span>
                   </div>
-                  <span className="font-mono text-green-400">1,247</span>
+                  <span className="font-mono text-green-400">{globalStats.totalPlayers}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
@@ -224,7 +169,7 @@ export default function LeaderboardPage() {
                     <Zap className="w-4 h-4 text-yellow-400" />
                     <span className="text-green-300">{t('exploitsFound')}</span>
                   </div>
-                  <span className="font-mono text-green-400">3,891</span>
+                  <span className="font-mono text-green-400">{globalStats.exploitsFound}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
@@ -232,7 +177,7 @@ export default function LeaderboardPage() {
                     <Clock className="w-4 h-4 text-purple-400" />
                     <span className="text-green-300">{t('avgCompletion')}</span>
                   </div>
-                  <span className="font-mono text-green-400">35m 22s</span>
+                  <span className="font-mono text-green-400">—</span>
                 </div>
               </div>
             </Terminal>
@@ -270,9 +215,6 @@ export default function LeaderboardPage() {
                         </div>
                         <div className="text-sm text-green-300/60">
                           {entry.completedChallenges}/{entry.totalChallenges} {t('challenges')}
-                        </div>
-                        <div className="text-xs text-green-300/40">
-                          {formatTime(entry.timeToComplete)}
                         </div>
                       </div>
                     </div>

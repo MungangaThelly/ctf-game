@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { checkRateLimit, requestIp } from '@/lib/rate-limit';
+import { sendVerificationEmail } from '@/lib/account-email';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_-]{3,32}$/;
@@ -93,12 +94,18 @@ export async function POST(req: Request) {
         username: username.trim(),
         password: hashedPassword,
         name: name || username,
+        emailVerified: process.env.RESEND_API_KEY && process.env.EMAIL_FROM ? null : new Date(),
       },
     });
 
+    const verificationSent = user.emailVerified ? false : await sendVerificationEmail({ id: user.id, email: user.email })
+      .then(() => true)
+      .catch((error) => { console.error('Verification email failed:', error); return false; });
+
     return Response.json(
       {
-        message: 'User created successfully',
+        message: verificationSent ? 'Account created. Check your email to verify it.' : 'Account created successfully.',
+        verificationSent,
         user: { id: user.id, email: user.email, username: user.username },
       },
       { status: 201 }
