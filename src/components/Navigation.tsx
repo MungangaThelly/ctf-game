@@ -104,7 +104,7 @@ export function Navigation() {
         {session ? (
           <div className="flex items-center space-x-3">
             <div className="text-sm font-mono text-green-300">{session.user?.name}</div>
-            {session.user?.email === 'admin@example.com' && (
+            {session.user?.isAdmin && (
               <Link href={getLocaleHref('/admin')} className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-mono text-sm flex items-center space-x-1">
                 <BarChart3 className="w-4 h-4" />
                 <span>{t('admin')}</span>
@@ -199,7 +199,7 @@ export function Navigation() {
                 {session ? (
                   <>
                     <div className="font-mono text-sm text-green-300 px-3 py-2">{session.user?.username || session.user?.name}</div>
-                    {session.user?.email === 'admin@example.com' && (
+                    {session.user?.isAdmin && (
                       <Link href={getLocaleHref('/admin')} onClick={() => setIsOpen(false)} className="block w-full px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-mono text-sm text-center flex items-center justify-center space-x-2">
                         <BarChart3 className="w-4 h-4" />
                         <span>{t('admin')}</span>
